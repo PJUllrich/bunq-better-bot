@@ -1,10 +1,11 @@
-from cryptography.hazmat.primitives import serialization
-from cryptography.hazmat.primitives.asymmetric import rsa
-from cryptography.hazmat.backends import default_backend
-from Config_Controller import Config
-from apiwrapper import API
 from pprint import pprint
 
+from cryptography.hazmat.backends import default_backend
+from cryptography.hazmat.primitives import serialization
+from cryptography.hazmat.primitives.asymmetric import rsa
+
+from lib.Config_Controller import Config
+from lib.apiwrapper import API
 
 c = Config('BunqAPI')
 
