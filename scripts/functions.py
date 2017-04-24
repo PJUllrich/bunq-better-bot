@@ -31,7 +31,7 @@ def create_new_key_pair():
     c.save()
 
 
-def register_key():
+def register_key_pair():
     private_key = c.get('KEY_PRIVATE')
 
     bunq_api = API(private_key, None)
