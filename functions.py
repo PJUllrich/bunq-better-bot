@@ -42,6 +42,10 @@ def register_key():
 
     # you will most probably want to store the token that is returned
     r = bunq_api.query('installation', {'client_public_key': public_key})
-    token = r.json()['Response'][1]['Token']['token']
-    c.set('token', token)
-    c.save()
+
+    if r.status_code == 200:
+        token = [x for x in r.json()['Response'] if list(x)[0] == 'Token'][0]['Token']['token']
+        c.set('token', token)
+        c.save()
+    else:
+        pprint(r.json()['Error'][0])
