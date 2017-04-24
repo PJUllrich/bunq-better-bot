@@ -4,8 +4,8 @@ from cryptography.hazmat.backends import default_backend
 from cryptography.hazmat.primitives import serialization
 from cryptography.hazmat.primitives.asymmetric import rsa
 
-from lib.Config_Controller import Config
-from lib.apiwrapper import API
+from lib.Configcontroller import Config
+from lib.Apiwrapper import API
 
 c = Config('BunqAPI')
 
