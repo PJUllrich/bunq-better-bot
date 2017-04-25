@@ -3,21 +3,22 @@ import os
 
 
 class Controller(object):
-    def __init__(self, section):
+    section_default = 'BunqAPI'
+
+    def __init__(self):
         """Create an instance of a config controller for getting and setting information
         :param section: The default section from and to which to get and set information 
         """
 
-        self.path = os.path.dirname(os.path.realpath(__file__)) + 'config.ini'
+        self.path = os.path.dirname(os.path.realpath(__file__)) + '/config.ini'
         self.config = configparser.ConfigParser()
         self.config.read(self.path)
-        self.section_default = section
 
-    def get(self, name, section='BunqAPI'):
+    def get(self, name, section=section_default):
         """Returns a value with a given name from the configuration file."""
         return self.config[section][name]
 
-    def set(self, name, val, section='BunqAPI'):
+    def set(self, name, val, section=section_default):
         """Sets an entry in the default section of the config file to a specifieg value
         :param section: [Optional] The section in which an entry should be changed
         :param name: The entry whose value should be changed

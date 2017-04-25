@@ -10,7 +10,7 @@ from cryptography.hazmat.primitives.asymmetric import rsa
 from lib.apiwrapper import API
 from lib.config.controller import Controller
 
-config = Controller('BunqAPI')
+config = Controller()
 
 
 def create_new_key_pair():
