@@ -3,6 +3,9 @@ import os
 
 
 class Controller(object):
+    """A controller class for getting and setting key/value pairs in the config file
+    """
+
     section_default = 'BunqAPI'
 
     def __init__(self):
@@ -32,6 +35,8 @@ class Controller(object):
         self.save()
 
     def save(self):
+        """Saves the changes to the config file.
+        """
         file = open(self.path, 'w')
         self.config.write(file)
         file.close()
