@@ -1,4 +1,4 @@
-from scripts.functions import *
+from scripts.functions.setup import *
 
 # First, we will create a new key pair (public/private) and save them to the lib/config.ini file
 create_new_key_pair()

@@ -2,7 +2,7 @@ import configparser
 import os
 
 
-class Config(object):
+class Controller(object):
     def __init__(self, section):
         """Create an instance of a config controller for getting and setting information
         :param section: The default section from and to which to get and set information 
