@@ -81,7 +81,7 @@ def create_new_session():
         print('Create Session Error: ' + str(r.json()['Error'][0]))
 
 
-def set_user_id():
+def get_user_id():
     bunq_api = get_api_connection()
     r = bunq_api.query('user', verify=True)
     if r.status_code == 200:
