@@ -28,6 +28,7 @@ class Config(object):
             self.config.add_section(section)
 
         self.config.set(section, name, val)
+        self.save()
 
     def save(self):
         file = open(self.path, 'w')
