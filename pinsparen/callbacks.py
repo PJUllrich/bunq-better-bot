@@ -3,46 +3,35 @@ import logging
 from bunq.sdk.model.generated import MonetaryAccountBank, UserPerson, \
     object_
 
-import api
+from api import api_context, get_active_accounts, get_iban, get_user
 
 logger = logging.getLogger(__name__)
 
 
-def setup_callbacks(url, category):
-    user = api.get_user()
-    accounts = _get_all_accounts(user)
+def setup_callbacks(savings_iban, url, category):
+    user = get_user()
+    accounts = get_active_accounts()
+    accounts = [acc for acc in accounts if get_iban(acc) != savings_iban]
 
     for acc in accounts:
-        res = _add_callback(user, acc, url, category)
-        logger.info(f'Added callback to account. Result - {res}')
-
-
-def reset_callbacks():
-    user = api.get_user()
-    accounts = _get_all_accounts(user)
-
-    for acc in accounts:
-        _remove_callbacks(user, acc)
-
-
-def _get_all_accounts(user):
-    return MonetaryAccountBank.list(api.api_context(), user.id_)
+        res1 = _remove_callbacks(user, acc)
+        res2 = _add_callback(user, acc, url, category)
+        logger.info(f'Deleted all callbacks - Result {res1}. '
+                    f'Added callback to account. Result - {res2}')
 
 
 def _add_callback(user: UserPerson, account: MonetaryAccountBank, url,
                   category):
-    callbacks_old = account.notification_filters
-    callback_to_add = object_.NotificationFilter(
+    callback_new = object_.NotificationFilter(
         "URL",
         url,
         category
     )
-    callbacks_old.append(callback_to_add)
     request_map = {
-        MonetaryAccountBank.FIELD_NOTIFICATION_FILTERS: callbacks_old
+        MonetaryAccountBank.FIELD_NOTIFICATION_FILTERS: [callback_new]
     }
 
-    return MonetaryAccountBank.update(api.api_context(), request_map, user.id_,
+    return MonetaryAccountBank.update(api_context(), request_map, user.id_,
                                       account.id_)
 
 
@@ -52,5 +41,5 @@ def _remove_callbacks(user: UserPerson, account: MonetaryAccountBank):
         MonetaryAccountBank.FIELD_NOTIFICATION_FILTERS: callbacks_new
     }
 
-    return MonetaryAccountBank.update(api.api_context(), request_map, user.id_,
+    return MonetaryAccountBank.update(api_context(), request_map, user.id_,
                                       account.id_)

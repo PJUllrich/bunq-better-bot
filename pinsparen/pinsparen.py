@@ -28,5 +28,5 @@ if __name__ == "__main__":
     setup_api_context(_ENVIRONMENT, _API_KEY, _DEVICE_DESCRIPTION)
     set_savings_account(_SAVINGS_IBAN)
     add_event_handler(_CALLBACK_CATEGORY, round_account_balances)
+    setup_callbacks(_SAVINGS_IBAN, _CALLBACK_URL, _CALLBACK_CATEGORY)
     start_event_listener(_PORT)
-    setup_callbacks(_CALLBACK_URL, _CALLBACK_CATEGORY)

@@ -1,6 +1,5 @@
 import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
-from threading import Thread
 
 from handler import handle_event
 
@@ -17,8 +16,7 @@ class RequestHandler(BaseHTTPRequestHandler):
         post_body = self.rfile.read(content_length)
 
         if len(post_body) > 0:
-            t = Thread(target=handle_event, args=(post_body,))
-            t.start()
+            handle_event(post_body)
 
 
 def start_event_listener(port):

@@ -3,7 +3,8 @@ import logging
 from bunq.sdk.model import generated
 from bunq.sdk.model.generated import MonetaryAccountBank, object_
 
-import api
+from api import api_context, get_account_for_iban, get_user, \
+    get_active_accounts, get_iban, get_attr_from_alias
 
 logger = logging.getLogger(__name__)
 
@@ -16,18 +17,17 @@ def set_savings_account(savings_iban):
     Needs to be run before any other method from this script!
     """
     global __SAVINGS_ACCOUNT
-    __SAVINGS_ACCOUNT = api.get_account_for_iban(savings_iban)
+    __SAVINGS_ACCOUNT = get_account_for_iban(savings_iban)
 
 
 def round_account_balances(msg_json):
     category = msg_json['NotificationUrl']['category']
     logger.info(f'Received Callback - {category}')
 
-    user = api.get_user()
-    accounts = generated.MonetaryAccountBank.list(api.api_context(), user.id_)
-    savings_iban = _get_iban(__SAVINGS_ACCOUNT)
+    accounts = get_active_accounts()
+    savings_iban = get_iban(__SAVINGS_ACCOUNT)
     for acc in accounts:
-        if _get_iban(acc) != savings_iban:
+        if get_iban(acc) != savings_iban:
             _round_balance(acc)
 
 
@@ -45,7 +45,7 @@ def _get_amount_to_save(account):
 
 
 def make_payment(account_from, account_to, amount):
-    iban_to = _get_iban(account_to)
+    iban_to = get_iban(account_to)
     request_map = {
         generated.Payment.FIELD_AMOUNT: object_.Amount(
             abs(amount),
@@ -59,10 +59,10 @@ def make_payment(account_from, account_to, amount):
     }
 
     request_map[generated.Payment.FIELD_COUNTERPARTY_ALIAS].name = \
-        _get_alias_name(account_to)
+        get_attr_from_alias(account_to, 'name', 'IBAN')
 
-    user = api.get_user()
-    ctx = api.api_context()
+    user = get_user()
+    ctx = api_context()
 
     payment_id = generated.Payment.create(ctx,
                                           request_map,
@@ -71,13 +71,8 @@ def make_payment(account_from, account_to, amount):
 
     generated.Payment.get(ctx, user.id_, account_from.id_, payment_id).to_json()
 
-    iban_from = _get_iban(account_from)
+    iban_from = get_iban(account_from)
     logger.info(f'Transferred {amount} Euro from {iban_from} to {iban_to}')
 
 
-def _get_iban(account):
-    return [a.value for a in account.alias if a.type_ == 'IBAN'][0]
 
-
-def _get_alias_name(account):
-    return [a.name for a in account.alias if a.type_ == 'IBAN'][0]
