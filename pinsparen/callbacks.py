@@ -6,8 +6,8 @@ from bunq.sdk.model.generated import UserPerson
 from bunq.sdk.model.generated import MonetaryAccountBank
 from bunq.sdk.model.generated.object_ import NotificationFilter
 
-from pinsparen import api
-from pinsparen import util
+import api
+import util
 
 logger = logging.getLogger(__name__)
 
