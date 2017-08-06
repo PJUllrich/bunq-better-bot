@@ -1,45 +1,46 @@
 import logging
+from threading import Thread
 
-from bunq.sdk.model.generated import MonetaryAccountBank, UserPerson, \
-    object_
+from bunq.sdk.model.generated import MonetaryAccountBank, UserPerson
+from bunq.sdk.model.generated.object_ import NotificationFilter
 
-from api import api_context, get_active_accounts, get_iban, get_user
+import api
+import util
 
 logger = logging.getLogger(__name__)
 
 
-def setup_callbacks(savings_iban, url, category):
-    user = get_user()
-    accounts = get_active_accounts()
-    accounts = [acc for acc in accounts if get_iban(acc) != savings_iban]
+class Callback:
+    def __init__(self, category, url):
+        self.category = category
+        self.url = url
+
+
+def setup_callbacks(accounts, callbacks):
+    user = util.get_user()
 
     for acc in accounts:
-        res1 = _remove_callbacks(user, acc)
-        res2 = _add_callback(user, acc, url, category)
-        logger.info(f'Deleted all callbacks - Result {res1}. '
-                    f'Added callback to account. Result - {res2}')
+        t = Thread(target=reset_and_add_callbacks, args=(user, acc, callbacks,))
+        t.start()
 
 
-def _add_callback(user: UserPerson, account: MonetaryAccountBank, url,
-                  category):
-    callback_new = object_.NotificationFilter(
-        "URL",
-        url,
-        category
-    )
-    request_map = {
-        MonetaryAccountBank.FIELD_NOTIFICATION_FILTERS: [callback_new]
-    }
-
-    return MonetaryAccountBank.update(api_context(), request_map, user.id_,
-                                      account.id_)
+def reset_and_add_callbacks(user, account, callbacks):
+    res1 = _remove_callbacks(user, account)
+    res2 = _add_callbacks(user, account, callbacks)
+    logger.info(f'Deleted all callbacks - Result {res1}. '
+                f'Added callbacks to account. Result - {res2}')
 
 
-def _remove_callbacks(user: UserPerson, account: MonetaryAccountBank):
-    callbacks_new = []
+def _add_callbacks(user: UserPerson, account: MonetaryAccountBank, callbacks):
+    callbacks_new = [NotificationFilter('URL', c.url, c.category) for c in
+                     callbacks]
     request_map = {
         MonetaryAccountBank.FIELD_NOTIFICATION_FILTERS: callbacks_new
     }
 
-    return MonetaryAccountBank.update(api_context(), request_map, user.id_,
+    return MonetaryAccountBank.update(api.Client.ctx(), request_map, user.id_,
                                       account.id_)
+
+
+def _remove_callbacks(user: UserPerson, account: MonetaryAccountBank):
+    return _add_callbacks(user, account, [])
