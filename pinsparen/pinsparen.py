@@ -22,7 +22,7 @@ _CALLBACKS = [
 ]
 
 # Change this to PRODUCTION once you're ready to leave the sandbox!
-_ENVIRONMENT = context.ApiEnvironmentType.PRODUCTION
+_ENVIRONMENT = context.ApiEnvironmentType.SANDBOX
 
 # Change this port if it overlaps with another port on your system
 _PORT = 8500

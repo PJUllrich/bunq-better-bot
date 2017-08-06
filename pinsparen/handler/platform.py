@@ -20,7 +20,6 @@ class EventHandlerPlatform:
     @classmethod
     def handle_event(cls, data_bytes):
         msg_json = cls.parse_message(data_bytes)
-        print(msg_json)
 
         category = msg_json['NotificationUrl']['category']
         logger.info(f'Event received! - {category}')
