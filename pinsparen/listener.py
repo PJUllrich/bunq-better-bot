@@ -10,7 +10,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     """The RequestHandler for handling HTTP POST REQUESTS
     """
 
-    def do_POST(self):
+    def do_post(self):
         self.send_response(200)
 
         content_length = int(self.headers['content-length'])
