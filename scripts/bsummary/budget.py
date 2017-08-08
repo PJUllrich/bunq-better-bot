@@ -4,6 +4,16 @@ from api.util import get_iban, get_transactions_for_date_range
 from util.dtime import get_early_midnight, get_late_midnight
 
 
+class BudgetResult:
+    """
+    A simple wrapper for the return values of Budget.calc_budget() function
+    """
+
+    def __init__(self, budget, expense):
+        self.budget = budget
+        self.expense = expense
+
+
 class Budget:
     _DEFAULT_DAYS_COVERED = 1
 
@@ -21,11 +31,13 @@ class Budget:
 
         Parameters
         ----------
-        accounts_all    : list[MonetaryAccountBank], all accounts of a user
+        accounts_all : list[MonetaryAccountBank]
+            All accounts of a user
 
         Returns
         -------
-        float           : sum of all outgoing payment values
+        float
+            Sum of all outgoing payment values
         """
 
         accounts_used = self._get_budget_accounts(accounts_all)
@@ -37,7 +49,7 @@ class Budget:
 
         expense = self._get_total_expense(payments_for)
 
-        return expense
+        return BudgetResult(self, expense)
 
     def _get_budget_accounts(self, accounts):
         """
@@ -46,11 +58,13 @@ class Budget:
 
         Parameters
         ----------
-        accounts    : list[MonetaryAccountBank], all accounts of a user
+        accounts : list[MonetaryAccountBank]
+            All accounts of a user
 
         Returns
         -------
-        list[MonetaryAccountBank]   : All accounts whose IBAN is in self.IBANs
+        list[MonetaryAccountBank]
+            All accounts whose IBAN is in self.IBANs
         """
 
         return [acc for acc in accounts if get_iban(acc) in self.IBANs]
@@ -62,11 +76,13 @@ class Budget:
 
         Parameters
         ----------
-        account         : MonetaryAccountBank, for which to get the payments
+        account : MonetaryAccountBank
+            For which to get the payments
 
         Returns
         -------
-        list[Payment]   : all Payments for an account for a given date range
+        list[Payment]
+            All Payments for an account for a given date range
         """
 
         start, end = self._get_date_range()
@@ -82,11 +98,12 @@ class Budget:
 
         Parameters
         ----------
-        payments        : list[Payment]
+        payments : list[Payment]
 
         Returns
         -------
-        list[Payment]   : all Payments from the GIVEN account to ANOTHER account
+        list[Payment]
+            All Payments from the GIVEN account to ANOTHER account
         """
 
         payments_out = [p for p in payments if float(p.amount.value) < 0]
@@ -101,7 +118,8 @@ class Budget:
 
         Returns
         -------
-        (datetime, datetime)    : start and end of a date range
+        (datetime, datetime)
+            Start and end of a date range
         """
 
         now = datetime.now(timezone.utc)
@@ -123,7 +141,8 @@ class Budget:
 
         Returns
         -------
-        list[Payment]   : the filtered list of payments
+        list[Payment]
+            The filtered list of payments
         """
 
         IBANs_own = [get_iban(acc) for acc in accounts_own]
@@ -133,6 +152,24 @@ class Budget:
 
     @staticmethod
     def _is_to_foreign(payment, IBANs_own):
+        """
+        A simple check for determining whether a payment went to an account
+        of the user or to a 'foreign' account, thus an account that is not
+        one of the user's own accounts.
+
+        Parameters
+        ----------
+        payment : Payment
+            The payment to be checked
+        IBANs_own : list[str]
+            The IBANs of the user's accounts
+
+        Returns
+        -------
+        bool
+            True if payment went to foreign account
+            False if payment went to an account of the user
+        """
         IBAN_to = payment.counterparty_alias.pointer.value
         return IBAN_to not in IBANs_own
 
@@ -143,11 +180,12 @@ class Budget:
 
         Parameters
         ----------
-        payments    : list[list[Payment]]
+        payments : list[list[Payment]]
 
         Returns
         -------
-        float       : the sum of all values of all payments
+        float
+            The sum of all values of all payments
         """
         return sum([sum([float(p.amount.value) for p in batch])
                     for batch in payments])
