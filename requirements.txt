@@ -1,1 +1,1 @@
-bunq-sdk==0.9.0
+bunq-sdk==0.9.1
