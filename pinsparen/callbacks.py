@@ -1,9 +1,7 @@
 import logging
 from threading import Thread
-from typing import List
 
-from bunq.sdk.model.generated import UserPerson
-from bunq.sdk.model.generated import MonetaryAccountBank
+from bunq.sdk.model.generated import MonetaryAccountBank, UserPerson
 from bunq.sdk.model.generated.object_ import NotificationFilter
 
 import api

@@ -1,5 +1,4 @@
 import logging
-from typing import Union
 
 from bunq.sdk.model import generated
 from bunq.sdk.model.generated import MonetaryAccountBank
@@ -29,7 +28,7 @@ def get_active_accounts():
 
     Returns
     -------
-    generated.MonetaryAccountBank
+    list[generated.MonetaryAccountBank]
     """
 
     user = get_user()

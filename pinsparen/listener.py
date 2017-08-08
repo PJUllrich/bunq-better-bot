@@ -10,7 +10,7 @@ class RequestHandler(BaseHTTPRequestHandler):
     """The RequestHandler for handling HTTP POST REQUESTS
     """
 
-    def do_post(self):
+    def do_POST(self):
         self.send_response(200)
 
         content_length = int(self.headers['content-length'])
@@ -21,6 +21,14 @@ class RequestHandler(BaseHTTPRequestHandler):
 
 
 def start_event_listener(port):
+    """
+    Calls a HTTPServer to connect to a specified port and sets up
+    RequestHandler as an HTTP request handler.
+
+    Args:
+        port: int, the port to which the listener connects to
+
+    """
     server = HTTPServer(('', port), RequestHandler)
     logger.info(f'Listening on localhost:{port}')
     try:
