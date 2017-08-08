@@ -66,10 +66,8 @@ def get_iban(account):
 
     Returns
     -------
-    None
-        If no iban has been found.
     str
-        If an iban has been found.
+        If an iban has been found. None otherwise
     """
 
     return get_attr_from_alias(account, 'value', 'IBAN')
