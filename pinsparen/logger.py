@@ -2,6 +2,9 @@ import logging
 
 
 def setup_logger():
+    """
+    Sets up a simle logger which logs to a 'output.log' file.
+    """
     logger = logging.getLogger()
     logger.setLevel(logging.INFO)
 
