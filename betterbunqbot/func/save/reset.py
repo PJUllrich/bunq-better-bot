@@ -1,5 +1,5 @@
 import api.util as util
-from psparen.callbacks import setup_callbacks
+from func.save.callbacks import setup_callbacks
 
 user = util.get_user()
 accounts = util.get_all_accounts(user)

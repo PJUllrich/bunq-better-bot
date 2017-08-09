@@ -4,7 +4,7 @@ from bunq.sdk.model import generated
 from bunq.sdk.model.generated import object_
 
 import api.util as util
-from psparen.handler.basehandler import BaseHandler
+from func.save.handler.basehandler import BaseHandler
 
 logger = logging.getLogger(__name__)
 
