@@ -1,7 +1,7 @@
 import logging
 from http.server import BaseHTTPRequestHandler, HTTPServer
 
-from psparen.handler.platform import EventHandlerPlatform
+from func.save.handler.platform import EventHandlerPlatform
 
 logger = logging.getLogger(__name__)
 

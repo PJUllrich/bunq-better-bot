@@ -1,7 +1,7 @@
 import json
 import logging
 
-from psparen.handler.basehandler import BaseHandler
+from func.save.handler.basehandler import BaseHandler
 
 logger = logging.getLogger(__name__)
 
