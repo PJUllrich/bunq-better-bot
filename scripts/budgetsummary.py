@@ -38,4 +38,5 @@ if __name__ == "__main__":
     logger.setup_logger('output-budgetsummary.log')
     Client.setup_api_context(_ENVIRONMENT, _API_KEY, _DEVICE_DESCRIPTION)
 
-    bot = Telegram(_TELEGRAM_TOKEN, do_update)
+    bot = Telegram(_TELEGRAM_TOKEN)
+    bot.update_action = do_update
