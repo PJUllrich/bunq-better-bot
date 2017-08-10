@@ -1,20 +1,23 @@
-from sqlalchemy import Column, Integer, String, ForeignKey
+from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
+from model import Base
 
-class User:
-    __tablename__ = 'user'
+
+class User(Base):
+    __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
     phone = Column(String, nullable=False)
     password = Column(String, nullable=False)
-    apikey = Column(String, nullable=False)
-    budget = relationship('Budget')
+    key = Column(String, nullable=False)
+    budgets = relationship('Budget', backref='user', primaryjoin='User.id==Budget.user_id')
+    accounts = relationship('Account', backref='user', primaryjoin='User.id==Account.user_id')
 
-    def __init__(self, phone, pw_hash, api_key):
+    def __init__(self, phone, password, key):
         self.phone = phone
-        self.password = pw_hash
-        self.api_key = api_key
+        self.password = password
+        self.key = key
 
-        self.budgets = None
-        self.callbacks = None
+        self.budgets = []
+        self.accounts = []

@@ -4,7 +4,7 @@ from bunq.sdk import context
 import util.logger as logger
 from api.client import Client
 from bot.bot import TelegramBot
-from model.budget import BudgetApiInterface
+from func.interface import BudgetApiInterface
 
 _API_KEY = os.environ['BUNQ_BOT_API_KEY']
 _BOT_TOKEN = os.environ['BUNQ_BOT_TOKEN']

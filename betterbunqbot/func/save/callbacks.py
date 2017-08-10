@@ -10,22 +10,6 @@ from api.util import get_user
 logger = logging.getLogger(__name__)
 
 
-class Callback:
-    def __init__(self, category, url):
-        """
-        Parameters
-        ----------
-        category    : str
-            The catagory of the callback in all caps. Catagories can be found
-            here: https://doc.bunq.com/api/1/page/callbacks
-        url         : str
-            The target url for the POST callback notification.
-        """
-
-        self.category = category
-        self.url = url
-
-
 def setup_callbacks(accounts, callbacks):
     """
     Parameters
