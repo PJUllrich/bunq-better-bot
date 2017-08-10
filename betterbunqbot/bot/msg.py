@@ -7,8 +7,6 @@ INVALID_INPUT_NUMBER = "Invalid input. Please enter a number."
 NO_PERMISSION = "You don't have permission to contact this bot!"
 ERROR = "Sorry, but an error occurred on my side."
 
-HOME = "Welcome to the Home menu. What do you want to do?"
-
 CREATE_START = "You want to create a new Budget! Great! Let's get going right away"
 CREATE_NAME = "Please enter a name for the new Budget"
 CREATE_IBAN = "Next, select the accounts, which the Budget should monitor and click 'Done' when " \
