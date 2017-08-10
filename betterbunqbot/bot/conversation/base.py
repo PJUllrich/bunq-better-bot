@@ -2,11 +2,13 @@ from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
 
 class BaseConversation:
-    @staticmethod
-    def create_markup(data, col=1):
+    @classmethod
+    def create_markup(cls, data, col=1, reverse=False):
         keys = []
         for r in range(0, len(data), col):
-            keys.append([BaseConversation.get_button(data[c]) for c in range(r, r + col)])
+            keys.append([cls.get_button(data[c]) for c in range(r, min(r + col, len(data)))])
+
+        keys.reverse() if reverse
 
         return InlineKeyboardMarkup(keys)
 

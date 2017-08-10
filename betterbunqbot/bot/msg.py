@@ -7,7 +7,9 @@ INVALID_INPUT_NUMBER = "Invalid input. Please enter a number."
 NO_PERMISSION = "You don't have permission to contact this bot!"
 ERROR = "Sorry, but an error occurred on my side."
 
-HOME = "Welcome to the Home menu. What do you want to do?"
+HOME = "Welcome to the Home menu. Where do you want to go?"
+ACCOUNT = "Here are some Account functions:"
+FUNCTIONS = "Here is what I can do for you:"
 
 CREATE_START = "You want to create a new Budget! Great! Let's get going right away"
 CREATE_NAME = "Please enter a name for the new Budget"

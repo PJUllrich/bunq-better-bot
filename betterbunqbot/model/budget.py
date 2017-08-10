@@ -25,3 +25,7 @@ class Budget(Base):
         self.duration = duration
 
         self.history = []
+
+    @staticmethod
+    def add_budget(budget):
+        pass

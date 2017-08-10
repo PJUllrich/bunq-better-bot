@@ -1,7 +1,7 @@
 from sqlalchemy import Column, Integer, String
 from sqlalchemy.orm import relationship
 
-from model import Base
+from model import Base, session
 
 
 class User(Base):
@@ -21,3 +21,8 @@ class User(Base):
 
         self.budgets = []
         self.accounts = []
+
+    @staticmethod
+    def add_user(user):
+        session.add(user)
+        session.commit()

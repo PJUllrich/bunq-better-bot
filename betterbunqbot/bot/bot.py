@@ -46,7 +46,7 @@ class TelegramBot:
         #
         #     bot.send_chat_action(chat_id=self.chat_id, action=ChatAction.TYPING)
         #
-        #     budget_results = self.actions.calc_budgets()
+        #     budget_results = self.actions.get_budget_updates()
         #     for res in budget_results:
         #         duration = self._get_duration(res.budget.days_covered)
         #
