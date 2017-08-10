@@ -1,7 +1,12 @@
 from datetime import datetime, timedelta, timezone
 
+from sqlalchemy import Column, Float, ForeignKey, Integer, JSON, String
+from sqlalchemy.ext.declarative import declarative_base
+
 from api.util import get_iban, get_transactions_for_date_range
 from util.dtime import get_early_midnight, get_late_midnight
+
+Base = declarative_base()
 
 
 class BudgetResult:
@@ -14,14 +19,25 @@ class BudgetResult:
         self.expense = expense
 
 
-class Budget:
-    _DEFAULT_DAYS_COVERED = 1
+class Budget(Base):
+    __tablename__ = 'budget'
 
-    def __init__(self, name, IBANs, keywords=None):
+    id = Column(Integer, primary_key=True)
+    user_id = Column(Integer, ForeignKey('user.id'))
+
+    name = Column(String(250), nullable=False)
+    iban = Column(JSON, nullable=False)
+    limit = Column(Float, nullable=False)
+    duration = Column(Integer, nullable=False)
+    history = Column(JSON)
+
+    def __init__(self, name, iban, limit, duration):
         self.name = name
-        self.IBANs = IBANs
-        self.keywords = keywords
-        self.days_covered = self._DEFAULT_DAYS_COVERED
+        self.iban = iban
+        self.limit = limit
+        self.duration = duration
+
+        self.history = []
 
     def calc_budget(self, accounts_all):
         """
@@ -67,7 +83,7 @@ class Budget:
             All accounts whose IBAN is in self.IBANs
         """
 
-        return [acc for acc in accounts if get_iban(acc) in self.IBANs]
+        return [acc for acc in accounts if get_iban(acc) in self.iban]
 
     def _get_payments(self, account):
         """
@@ -124,7 +140,7 @@ class Budget:
 
         now = datetime.now(timezone.utc)
 
-        date_start = get_early_midnight(now - timedelta(days=self.days_covered))
+        date_start = get_early_midnight(now - timedelta(days=self.duration))
         date_end = get_late_midnight(now - timedelta(days=1))
 
         return date_start, date_end

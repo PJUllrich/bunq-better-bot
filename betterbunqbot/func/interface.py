@@ -30,6 +30,6 @@ class BudgetApiInterface(ApiInterface):
             raise ValueError()
 
         b = Budget(name, iban)
-        b.days_covered = days
+        b.duration = days
 
         self.budgets.append(b)
