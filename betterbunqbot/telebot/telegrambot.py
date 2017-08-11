@@ -3,7 +3,7 @@ import logging
 import os
 from telegram.ext import Updater
 
-from telebot.conversation.main import MainConversation
+from telebot.conversation.main import Main
 
 logger = logging.getLogger(__name__)
 
@@ -29,7 +29,7 @@ class TelegramBot:
         self.setup_webhook()
 
     def setup_handlers(self):
-        handler_main = MainConversation(self.actions).handler
+        handler_main = Main(self.actions).handler
         self.dispatcher.add_handler(handler_main)
 
         self.dispatcher.add_error_handler(self.error)

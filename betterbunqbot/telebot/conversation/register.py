@@ -1,31 +1,16 @@
 import json
 
 import base64
-from telegram.ext import CallbackQueryHandler, ConversationHandler, Filters, MessageHandler
 
 import util.security as security
 from telebot import msg
-from telebot.conversation.base import BaseConversation
+from telebot.conversation.base import Base
+from telebot.conversation import main
 
-API_KEY, PASSWORD = range(2)
-
-_BTS_ENV = ['Sandbox', 'Production']
+BTS_ENV = ['Sandbox', 'Production']
 
 
-class RegisterConversation(BaseConversation):
-    @property
-    def handler(self):
-        return ConversationHandler(
-            entry_points=[CallbackQueryHandler(self.environment, pass_user_data=True)],
-
-            states={
-                API_KEY: [MessageHandler(Filters.text, self.api_key, pass_user_data=True)],
-                PASSWORD: [MessageHandler(Filters.text, self.password, pass_user_data=True)]
-            },
-
-            fallbacks=[]
-        )
-
+class Register(Base):
     @classmethod
     def environment(cls, bot, update, user_data):
         env = update.callback_query.data
@@ -33,7 +18,7 @@ class RegisterConversation(BaseConversation):
 
         cls.edit_message(bot, update, msg.REGISTER_KEY, markup=[])
 
-        return API_KEY
+        return main.REGISTER_KEY
 
     @classmethod
     def api_key(cls, bot, update, user_data):
@@ -42,7 +27,7 @@ class RegisterConversation(BaseConversation):
 
         bot.send_message(update.message.chat_id, msg.REGISTER_PASS)
 
-        return PASSWORD
+        return main.REGISTER_PW
 
     @classmethod
     def password(cls, bot, update, user_data):
@@ -50,9 +35,11 @@ class RegisterConversation(BaseConversation):
 
         cls.actions.register(json.dumps(user_data))
 
-        bot.send_message(update.message.chat_id, msg.REGISTER_END, reply_markup=[])
+        markup = cls.create_markup(main.BTS_ACCOUNT, col=2)
 
-        return -2
+        bot.send_message(update.message.chat_id, msg.REGISTER_END, reply_markup=markup)
+
+        return main.ACCOUNT_DECISION
 
     @classmethod
     def set_authentication_params(cls, update, user_data):

@@ -15,7 +15,8 @@ REGISTER_START = "You want to register! Great!\n"
 REGISTER_ENV = "Tell me whether this is a Sandbox or Production account:"
 REGISTER_KEY = "Now, please send me your API key:"
 REGISTER_PASS = "And finally, to protect your account, send me a secure password:"
-REGISTER_END = "Account created! Go back to Account and login in order to create a session."
+REGISTER_END = "Account created! Congratulations!\n" \
+               "Press Login to create a session."
 
 CREATE_START = "You want to create a new Budget! Great! Let's get going right away"
 CREATE_NAME = "Please enter a name for the new Budget"

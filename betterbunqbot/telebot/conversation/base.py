@@ -1,11 +1,10 @@
 from telegram import InlineKeyboardButton, InlineKeyboardMarkup
 
-_STATE = 'STATE'
+STATE = 'STATE'
 
 
-class BaseConversation:
-
-    btn_cmd_map = {}
+class Base:
+    btn_cmd_map = { }
     actions = None
 
     @classmethod
@@ -26,7 +25,7 @@ class BaseConversation:
     @classmethod
     def decision(cls, bot, update, user_data):
         choice = update.callback_query.data
-        buttons, commands = cls.btn_cmd_map[user_data[_STATE]]
+        buttons, commands = cls.btn_cmd_map[user_data[STATE]]
         cmd = commands[buttons.index(choice)]
 
         return cmd(bot, update, user_data)

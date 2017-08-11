@@ -1,27 +1,28 @@
-from telegram.ext import CallbackQueryHandler, ConversationHandler, RegexHandler
+from telegram.ext import CallbackQueryHandler, ConversationHandler, Filters, MessageHandler, \
+    RegexHandler
 
 from telebot import msg
-from telebot.conversation.base import BaseConversation, _STATE
-from telebot.conversation.register import RegisterConversation, _BTS_ENV
+from telebot.conversation.base import Base, STATE
+from telebot.conversation.register import BTS_ENV, Register
 
-HOME_DECISION, ACCOUNT_DECISION, FUNCTION_DECISION, REGISTER = range(4)
+HOME_DECISION, ACCOUNT_DECISION, FUNCTION_DECISION, REGISTER, REGISTER_KEY, REGISTER_PW = range(6)
 
-_BTS_MAIN = ['Account', 'Functions']
-_BTS_ACCOUNT = ['Info', 'Login', '<< Back', 'Register']
-_BTS_FUNCTIONS = ['<< Back', 'Save the Cents', 'Budgets']
+BTS_MAIN = ['Account', 'Functions']
+BTS_ACCOUNT = ['Info', 'Login', '<< Back', 'Register']
+BTS_FUNCTIONS = ['<< Back', 'Save the Cents', 'Budgets']
 
 
-class MainConversation(BaseConversation):
+class Main(Base):
     def __init__(self, actions):
-        BaseConversation.actions = actions
+        Base.actions = actions
         self.setup_flow()
 
     @classmethod
     def setup_flow(cls):
         cls.btn_cmd_map = {
-            HOME_DECISION: (_BTS_MAIN, [cls.account, cls.functions]),
-            ACCOUNT_DECISION: (_BTS_ACCOUNT, [cls.info, cls.login, cls.home, cls.register]),
-            FUNCTION_DECISION: (_BTS_FUNCTIONS, [cls.home, cls.save_cents, cls.budgets])
+            HOME_DECISION: (BTS_MAIN, [cls.account, cls.functions]),
+            ACCOUNT_DECISION: (BTS_ACCOUNT, [cls.info, cls.login, cls.home, cls.register]),
+            FUNCTION_DECISION: (BTS_FUNCTIONS, [cls.home, cls.save_cents, cls.budgets])
         }
 
     @property
@@ -35,7 +36,9 @@ class MainConversation(BaseConversation):
                 HOME_DECISION: [decision_handler],
                 ACCOUNT_DECISION: [decision_handler],
                 FUNCTION_DECISION: [decision_handler],
-                REGISTER: [RegisterConversation().handler]
+                REGISTER: [CallbackQueryHandler(Register.environment, pass_user_data=True)],
+                REGISTER_KEY: [MessageHandler(Filters.text, Register.api_key, pass_user_data=True)],
+                REGISTER_PW: [MessageHandler(Filters.text, Register.password, pass_user_data=True)]
             },
 
             fallbacks=[]
@@ -43,32 +46,32 @@ class MainConversation(BaseConversation):
 
     @classmethod
     def home(cls, bot, update, user_data):
-        markup = cls.create_markup(_BTS_MAIN)
+        markup = cls.create_markup(BTS_MAIN)
 
         if update.callback_query is None:
             bot.send_message(update.message.chat_id, msg.HOME, reply_markup=markup)
         else:
             cls.edit_message(bot, update, msg.HOME, markup)
 
-        user_data[_STATE] = HOME_DECISION
+        user_data[STATE] = HOME_DECISION
         return HOME_DECISION
 
     @classmethod
     def account(cls, bot, update, user_data):
-        markup = cls.create_markup(_BTS_ACCOUNT, col=2)
+        markup = cls.create_markup(BTS_ACCOUNT, col=2)
 
         cls.edit_message(bot, update, msg.ACCOUNT, markup)
 
-        user_data[_STATE] = ACCOUNT_DECISION
+        user_data[STATE] = ACCOUNT_DECISION
         return ACCOUNT_DECISION
 
     @classmethod
     def functions(cls, bot, update, user_data):
-        markup = cls.create_markup(_BTS_FUNCTIONS, col=2, reverse=True)
+        markup = cls.create_markup(BTS_FUNCTIONS, col=2, reverse=True)
 
         cls.edit_message(bot, update, msg.FUNCTIONS, markup)
 
-        user_data[_STATE] = FUNCTION_DECISION
+        user_data[STATE] = FUNCTION_DECISION
         return FUNCTION_DECISION
 
     @classmethod
@@ -80,7 +83,7 @@ class MainConversation(BaseConversation):
 
     @classmethod
     def register(cls, bot, update, user_data):
-        markup = cls.create_markup(_BTS_ENV, col=2)
+        markup = cls.create_markup(BTS_ENV, col=2)
         cls.edit_message(bot, update, msg.REGISTER_START + msg.REGISTER_ENV, markup=markup)
 
         return REGISTER

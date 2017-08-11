@@ -5,7 +5,7 @@ from telegram.ext import CommandHandler, \
     ConversationHandler, Filters, MessageHandler
 
 from telebot import msg
-from telebot.conversation.base import BaseConversation
+from telebot.conversation.base import Base
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ _INPUT_DONE = 'Done'
 _INPUT_MORE = 'More'
 
 
-class CreateConversation(BaseConversation):
+class Create(Base):
     def __init__(self, actions):
         self.actions = actions
         self.creation = {}
