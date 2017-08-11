@@ -4,8 +4,8 @@ from telegram import ChatAction, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import CommandHandler, \
     ConversationHandler, Filters, MessageHandler
 
-from bot import msg
-from bot.conversation.base import BaseConversation
+from telebot import msg
+from telebot.conversation.base import BaseConversation
 
 logger = logging.getLogger(__name__)
 

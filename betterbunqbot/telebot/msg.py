@@ -11,6 +11,12 @@ HOME = "Welcome to the Home menu. Where do you want to go?"
 ACCOUNT = "Here are some Account functions:"
 FUNCTIONS = "Here is what I can do for you:"
 
+REGISTER_START = "You want to register! Great!\n"
+REGISTER_ENV = "Tell me whether this is a Sandbox or Production account:"
+REGISTER_KEY = "Now, please send me your API key:"
+REGISTER_PASS = "And finally, to protect your account, send me a secure password:"
+REGISTER_END = "Account created! Go back to Account and login in order to create a session."
+
 CREATE_START = "You want to create a new Budget! Great! Let's get going right away"
 CREATE_NAME = "Please enter a name for the new Budget"
 CREATE_IBAN = "Next, select the accounts, which the Budget should monitor and click 'Done' when " \

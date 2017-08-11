@@ -1,4 +1,5 @@
 from sqlalchemy import Column, ForeignKey, Integer, String
+from sqlalchemy.orm import relationship
 
 from model import Base
 
@@ -10,6 +11,7 @@ class Callback(Base):
 
     id = Column(Integer, primary_key=True)
     account_id = Column(Integer, ForeignKey('accounts.id'))
+    account = relationship('Account', backref='callbacks')
 
     method = Column(String(10), nullable=False)
     target = Column(String(250), nullable=False)

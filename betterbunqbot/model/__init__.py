@@ -1,17 +1,17 @@
 from sqlalchemy import create_engine
 from sqlalchemy.ext.declarative import declarative_base
-from sqlalchemy.orm import sessionmaker
+from sqlalchemy.orm import scoped_session, sessionmaker
 
-_DB_URI = 'sqlite:///:memory:'
+_DB_URI = 'sqlite:////tmp/test.db'
 
+engine = create_engine(_DB_URI, convert_unicode=True)
+session = scoped_session(sessionmaker(bind=engine))
 Base = declarative_base()
+Base.query = session.query_property()
 
-engine = create_engine(_DB_URI)
-Base.metadata.create_all(engine)
-DBSession = sessionmaker(bind=engine)
-session = DBSession()
+from model.user import User
+from model.budget import Budget
+from model.account import Account
+from model.callback import Callback
 
-from .user import User
-from .budget import Budget
-from .account import Account
-from .callback import Callback
+Base.metadata.create_all(bind=engine)

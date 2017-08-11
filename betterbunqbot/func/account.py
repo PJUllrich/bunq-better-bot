@@ -4,8 +4,8 @@ from model import User
 
 @deco.decode_json
 @deco.decode_dict
-def register(phone, password, key):
-    user_new = User(phone, password, key)
+def register(env, chat_id, password_hash, key_api, key_encrypt):
+    user_new = User(env, chat_id, password_hash, key_api, key_encrypt)
     return User.add_user(user_new)
 
 

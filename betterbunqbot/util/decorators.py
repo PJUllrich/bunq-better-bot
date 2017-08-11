@@ -1,6 +1,7 @@
+import inspect
 import json
 
-from bot import msg
+from telebot import msg
 
 
 def owner_only(func):
@@ -22,7 +23,7 @@ def decode_json(func):
 
 
 def decode_dict(func):
-    params = func.__code__.co_varnames
+    params = inspect.getargspec(func)[0]
 
     def inner(data):
         args = [data.get(p) for p in params]

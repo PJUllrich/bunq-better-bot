@@ -1,7 +1,7 @@
 import os
 
 import util.logger as logger
-from bot.bot import TelegramBot
+from telebot.telegrambot import TelegramBot
 from func.interface import Interface
 
 _BOT_TOKEN = os.environ['BUNQ_BOT_TOKEN']

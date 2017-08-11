@@ -1,5 +1,4 @@
 from sqlalchemy import Column, Integer, String
-from sqlalchemy.orm import relationship
 
 from model import Base, session
 
@@ -8,16 +7,18 @@ class User(Base):
     __tablename__ = 'users'
 
     id = Column(Integer, primary_key=True)
-    phone = Column(String, nullable=False)
+    env = Column(String, nullable=False)
+    chat_id = Column(String, nullable=False)
     password = Column(String, nullable=False)
-    key = Column(String, nullable=False)
-    budgets = relationship('Budget', backref='user', primaryjoin='User.id==Budget.user_id')
-    accounts = relationship('Account', backref='user', primaryjoin='User.id==Account.user_id')
+    key_api = Column(String, nullable=False)
+    key_encrypt = Column(String, nullable=False)
 
-    def __init__(self, phone, password, key):
-        self.phone = phone
-        self.password = password
-        self.key = key
+    def __init__(self, env, chat_id, password_hash, key_api, key_encrypt):
+        self.env = env
+        self.chat_id = chat_id
+        self.password = password_hash
+        self.key_api = key_api
+        self.key_encrypt = key_encrypt
 
         self.budgets = []
         self.accounts = []

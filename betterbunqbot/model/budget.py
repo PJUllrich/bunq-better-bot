@@ -1,8 +1,7 @@
-from sqlalchemy import Column, Float, ForeignKey, Integer, JSON, String
+from sqlalchemy import Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from model import Base
-from model.associations.budget_account import budget_account
+from model import Base, session
 
 
 class Budget(Base):
@@ -10,22 +9,22 @@ class Budget(Base):
 
     id = Column(Integer, primary_key=True)
     user_id = Column(Integer, ForeignKey('users.id'))
-
-    accounts = relationship('Account', secondary=budget_account, backref='budgets')
+    user = relationship('User', backref='budgets')
 
     name = Column(String(250), nullable=False)
     limit = Column(Float, nullable=False)
     duration = Column(Integer, nullable=False)
-    history = Column(JSON)
+    history = Column(String)
 
-    def __init__(self, name, accounts, limit, duration):
+    def __init__(self, user, name, limit, duration):
+        self.user = user
         self.name = name
-        self.accounts = accounts
         self.limit = limit
         self.duration = duration
 
-        self.history = []
+        self.history = ''
 
     @staticmethod
     def add_budget(budget):
-        pass
+        session.add(budget)
+        session.commit()
