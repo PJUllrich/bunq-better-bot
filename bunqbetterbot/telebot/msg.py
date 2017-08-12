@@ -1,4 +1,3 @@
-BOT_NAME = 'bunqBetterBot'
 SESSION_DURATION = 5
 
 WELCOME = "Hello there! You can use my funky functionality to be even more happy with bunq!"
@@ -15,9 +14,20 @@ ACCOUNT = "Here are some Account functions:"
 FUNCTIONS = "Here is what I can do for you:"
 
 DELETE_MSG = "For security, please delete the previous message containing the {}.\n" \
-             "On iOS: Press long on message > More > Trash > Delete for me and {msg.BOT_NAME}\n" \
-             "On macOS: Right click message > Check 'Delete for {msg.BOT_NAME} > Delete\n" \
-             "On Android: I have no clue."
+             "\n" \
+             "*On iOS:*\n" \
+             "\t1. Press long on message\n" \
+             "\t2. Click *More...*\n" \
+             "\t3. Click *Trash* icon\n" \
+             "\t4. Click *Delete for me and bunqBetterBot*\n" \
+             "\n" \
+             "*On macOS:*\n" \
+             "\t1. Right click message\n" \
+             "\t2. Check *Delete for bunqBetterBot*\n" \
+             "\t3. Click *Delete*\n" \
+             "\n" \
+             "*On Android:*\n" \
+             "\tI have no clue. Check Google."
 
 REGISTER_START = "You want to register! Great!\n"
 REGISTER_ENV = "Tell me whether this is a Sandbox or Production account:"
@@ -27,10 +37,10 @@ REGISTER_END = "Account created! Congratulations!\n" \
                "Press Login to create a session."
 
 LOGIN_START = "Please send me your password:"
-LOGIN_FAIL = "Sorry, but your password does not match our records.\n" \
-             "Please edit your message and insert another password."
+LOGIN_FAIL = "Sorry, you either don't have an account yet, or you used the wrong password.\n\n"\
+             "Please either create an account first, or try another password."
 LOGIN_END = f"You're logged in!\n\n" \
-            f"Your session will last {SESSION_DURATION}min before you have to log in again."
+            f"Your session will last {SESSION_DURATION} min before you have to log in again."
 
 CREATE_START = "You want to create a new Budget! Great! Let's get going right away"
 CREATE_NAME = "Please enter a name for the new Budget"

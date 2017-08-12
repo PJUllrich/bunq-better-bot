@@ -23,7 +23,7 @@ def decode_json(func):
 
 
 def decode_dict(func):
-    params = inspect.getargspec(func)[0]
+    params = inspect.signature(func).parameters.keys()
 
     def inner(data):
         args = [data.get(p) for p in params]
@@ -32,5 +32,15 @@ def decode_dict(func):
             raise ValueError('Not all necessary data was passed.')
 
         return func(*args)
+
+    return inner
+
+
+def ensure_bytes(func):
+    def inner(data):
+        if not isinstance(data, bytes):
+            data = data.encode()
+
+        return func(data)
 
     return inner

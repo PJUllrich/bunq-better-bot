@@ -55,22 +55,19 @@ class Register(Base):
         password_derivated = security.derivate_key(password_clear.encode())
         password_hash = security.hash_key(password_derivated).hexdigest()
 
-        encrypt = cls._create_key_encrypted(security.create_random_key(), password_derivated)
-        api = cls._create_key_encrypted(user_data['key_api'].encode(), encrypt.key_encypted_bytes)
+        encrypt_key, encrypt_iv = security.encrypt(security.create_random_key(), password_derivated)
+        api_key, api_iv = security.encrypt(user_data['key_api'].encode(), encrypt_key)
 
         del password_derivated
         del user_data['key_api']
 
         user_data['chat_id'] = update.message.chat_id
         user_data['password_hash'] = password_hash
-        user_data['key_api'] = json.dumps(api.__dict__)
-        user_data['key_encrypt'] = json.dumps(encrypt.__dict__)
+        user_data['key_api'] = {'key': cls._bytes_to_str(api_key),
+                                'iv': cls._bytes_to_str(api_iv)}
+        user_data['key_encrypt'] = {'key': cls._bytes_to_str(encrypt_key),
+                                    'iv': cls._bytes_to_str(encrypt_iv)}
 
     @classmethod
-    def _create_key_encrypted(cls, key, password):
-        key_encrypted_bytes, iv_bytes = security.encrypt(key, password)
-
-        key_encrypted_str = base64.b64encode(key_encrypted_bytes).decode()
-        iv_str = base64.b64encode(iv_bytes).decode()
-
-        return security.KeyEncrypted(key_encrypted_str, iv_str)
+    def _bytes_to_str(cls, data):
+        return base64.b64encode(data).decode()

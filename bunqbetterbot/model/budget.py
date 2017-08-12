@@ -1,30 +1,25 @@
-from sqlalchemy import Column, Float, ForeignKey, Integer, String
+from sqlalchemy import Boolean, Column, Float, ForeignKey, Integer, String
 from sqlalchemy.orm import relationship
 
-from model import Base, session
+from model import Base
+from model.base_model import BaseModel
 
 
-class Budget(Base):
-    __tablename__ = 'budgets'
-
-    id = Column(Integer, primary_key=True)
+class Budget(Base, BaseModel):
     user_id = Column(Integer, ForeignKey('users.id'))
-    user = relationship('User', backref='budgets')
 
-    name = Column(String(250), nullable=False)
+    active = Column(Boolean, nullable=False)
+    name = Column(String, nullable=False)
     limit = Column(Float, nullable=False)
     duration = Column(Integer, nullable=False)
-    history = Column(String)
+    results = relationship('BudgetResult', backref='budget')
 
     def __init__(self, user, name, limit, duration):
         self.user = user
+
+        self.active = True
         self.name = name
         self.limit = limit
         self.duration = duration
 
-        self.history = ''
-
-    @staticmethod
-    def add_budget(budget):
-        session.add(budget)
-        session.commit()
+        self.results = []

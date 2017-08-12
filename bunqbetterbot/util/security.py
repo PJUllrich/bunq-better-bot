@@ -1,45 +1,37 @@
-import base64
-
 import bcrypt
 import hashlib
 import os
 from Cryptodome.Cipher import AES
 
-_ROUNDS = 11
+import util.decorators as deco
+
+_ROUNDS = 12
 _KEY_LENGTH = 32  # Results in AES-256
 _AES_MODE = AES.MODE_GCM
 
 
-class KeyEncrypted:
-    def __init__(self, key_encrypted, iv):
-        self.encrypted_key = key_encrypted
-        self.iv = iv
+@deco.ensure_bytes
+def derivate_key(key, salt=None):
+    if salt is None:
+        salt = bcrypt.gensalt(_ROUNDS)
 
-    @property
-    def key_encypted_bytes(self):
-        return base64.b64decode(self.encrypted_key)
-
-    @property
-    def iv_bytes(self):
-        return base64.b64decode(self.iv)
+    return bcrypt.hashpw(key, salt)
 
 
-def derivate_key(key):
-    return bcrypt.hashpw(key, bcrypt.gensalt(_ROUNDS))
-
-
+@deco.ensure_bytes
 def hash_key(key):
     return hashlib.blake2b(key, digest_size=_KEY_LENGTH)
 
 
+@deco.ensure_bytes
 def hash_password(pw):
     pw_derivated = derivate_key(pw)
     pw_hashed = hash_key(pw_derivated).hexdigest()
     return pw_hashed
 
 
-def check_password(pw, hashed):
-    return hash_password(pw) == hashed
+def check_password(pw, salt, hashed):
+    return hash_password(pw, salt) == hashed
 
 
 def encrypt(text_plain, key):

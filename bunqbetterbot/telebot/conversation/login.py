@@ -1,44 +1,54 @@
-import util.security as security
+from telegram import ParseMode
 
+import util.security as security
 from telebot import msg
 from telebot.conversation import main
-from telebot.conversation.base import Base
+from telebot.conversation.base import Base, STATE
 
 
 class Login(Base):
     @classmethod
     def start(cls, bot, update, user_data):
         # TODO: Check whether user is registered
+
+        user_data['login_attempt'] = 1
         cls.edit_message(bot, update, msg.LOGIN_START, [])
 
         return main.LOGIN_PW
 
     @classmethod
     def password(cls, bot, update, user_data):
-        pw_hashed = security.hash_password(update.message.text)
-        del update.message.text
+        message = update.message if update.message is not None else update.edited_message
+        pw_hashed = security.hash_password(message.text)
 
         data = {
-            'chat_id': update.message.chat_id,
+            'chat_id': message.chat_id,
             'pw_hashed': pw_hashed
         }
 
         authenticated = cls.actions.login(data)
 
         if not authenticated:
-            bot.send_message(update.message.chat_id, msg.LOGIN_FAIL)
-            return main.LOGIN_PW
+            return cls._handle_login_fail(bot, update, user_data)
 
         ans = msg.DELETE_MSG.format('password')
-        markup = cls.create_markup(main.BTS_DELETE_MSG)
-        bot.send_message(update.message.chat_id, ans, reply_markup=markup)
+        markup = cls.create_markup(main.BTS_DELETE_MSG, col=2)
+        bot.send_message(message.chat_id, ans, parse_mode=ParseMode.MARKDOWN, reply_markup=markup)
 
         return main.LOGIN_DEL
 
     @classmethod
     def delete(cls, bot, update, user_data):
+        markup = cls.create_markup(main.BTS_MAIN)
+        cls.edit_message(bot, update, msg.LOGIN_END, markup)
 
-        markup = cls.create_markup(main.BTS_ACCOUNT, col=2)
-        bot.send_message(update.message.chat_id, msg.LOGIN_END, reply_markup=markup)
+        user_data[STATE] = main.HOME_DECISION
+        return main.HOME_DECISION
 
-        return main.ACCOUNT_DECISION
+    @classmethod
+    def _handle_login_fail(cls, bot, update, user_data):
+        ans = f"Attempt Nr.: {user_data['login_attempt']}\n\n" + msg.LOGIN_FAIL
+        bot.send_message(update.message.chat_id, ans)
+
+        user_data['login_attempt'] += 1
+        return main.LOGIN_PW

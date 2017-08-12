@@ -1,7 +1,7 @@
 import random
 
 from model import Budget
-from test.rules.base import BaseRule
+from tests.rules.base import BaseRule
 
 
 class BudgetRule(BaseRule):
