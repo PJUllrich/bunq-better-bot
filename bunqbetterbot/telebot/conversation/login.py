@@ -34,3 +34,11 @@ class Login(Base):
         bot.send_message(update.message.chat_id, ans, reply_markup=markup)
 
         return main.LOGIN_DEL
+
+    @classmethod
+    def delete(cls, bot, update, user_data):
+
+        markup = cls.create_markup(main.BTS_ACCOUNT, col=2)
+        bot.send_message(update.message.chat_id, msg.LOGIN_END, reply_markup=markup)
+
+        return main.ACCOUNT_DECISION

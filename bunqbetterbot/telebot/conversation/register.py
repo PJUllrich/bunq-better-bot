@@ -43,7 +43,6 @@ class Register(Base):
         cls.actions.register(json.dumps(user_data))
 
         markup = cls.create_markup(main.BTS_ACCOUNT, col=2)
-
         bot.send_message(update.message.chat_id, msg.REGISTER_END, reply_markup=markup)
 
         return main.ACCOUNT_DECISION
@@ -51,11 +50,10 @@ class Register(Base):
     @classmethod
     def set_authentication_params(cls, update, user_data):
         password_clear = update.message.text
+        del update.message.text
+
         password_derivated = security.derivate_key(password_clear.encode())
         password_hash = security.hash_key(password_derivated).hexdigest()
-
-        del update.message.text
-        del password_clear
 
         encrypt = cls._create_key_encrypted(security.create_random_key(), password_derivated)
         api = cls._create_key_encrypted(user_data['key_api'].encode(), encrypt.key_encypted_bytes)

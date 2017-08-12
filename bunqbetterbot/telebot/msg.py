@@ -1,4 +1,5 @@
 BOT_NAME = 'bunqBetterBot'
+SESSION_DURATION = 5
 
 WELCOME = "Hello there! You can use my funky functionality to be even more happy with bunq!"
 UPDATE = "You spent {} Euro of your {} budget {}"
@@ -28,6 +29,8 @@ REGISTER_END = "Account created! Congratulations!\n" \
 LOGIN_START = "Please send me your password:"
 LOGIN_FAIL = "Sorry, but your password does not match our records.\n" \
              "Please edit your message and insert another password."
+LOGIN_END = f"You're logged in!\n\n" \
+            f"Your session will last {SESSION_DURATION}min before you have to log in again."
 
 CREATE_START = "You want to create a new Budget! Great! Let's get going right away"
 CREATE_NAME = "Please enter a name for the new Budget"

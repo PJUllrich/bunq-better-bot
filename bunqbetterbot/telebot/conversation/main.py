@@ -13,7 +13,7 @@ LOGIN_PW, LOGIN_DEL = range(8)
 BTS_MAIN = ['Account', 'Functions']
 BTS_ACCOUNT = ['Info', 'Login', '<< Back', 'Register']
 BTS_FUNCTIONS = ['<< Back', 'Save the Cents', 'Budgets']
-BTS_DELETE_MSG = ["I'm done"]
+BTS_DELETE_MSG = ["I don't know how", "Done"]
 
 
 class Main(Base):
@@ -43,7 +43,8 @@ class Main(Base):
                 REGISTER_ENV: [CallbackQueryHandler(Register.environment, pass_user_data=True)],
                 REGISTER_KEY: [MessageHandler(Filters.text, Register.api_key, pass_user_data=True)],
                 REGISTER_PW: [MessageHandler(Filters.text, Register.password, pass_user_data=True)],
-                LOGIN_PW: [MessageHandler(Filters.text, Login.password, pass_user_data=True)]
+                LOGIN_PW: [MessageHandler(Filters.text, Login.password, pass_user_data=True)],
+                LOGIN_DEL: [CallbackQueryHandler(Login.delete, pass_user_data=True)]
             },
 
             fallbacks=[]
@@ -81,9 +82,6 @@ class Main(Base):
 
     @classmethod
     def info(cls, bot, update, user_data):
-        pass
-
-    def login(self, bot, update, user_data):
         pass
 
     @classmethod
