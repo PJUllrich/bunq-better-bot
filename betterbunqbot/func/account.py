@@ -11,5 +11,5 @@ def register(env, chat_id, password_hash, key_api, key_encrypt):
 
 @deco.decode_json
 @deco.decode_dict
-def login(phone, password):
-    return User.login(phone, password)
+def login(chat_id, pw_hashed):
+    return User.login(chat_id, pw_hashed)

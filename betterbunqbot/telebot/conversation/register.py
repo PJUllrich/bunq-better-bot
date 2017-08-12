@@ -4,13 +4,20 @@ import base64
 
 import util.security as security
 from telebot import msg
-from telebot.conversation.base import Base
 from telebot.conversation import main
+from telebot.conversation.base import Base
 
 BTS_ENV = ['Sandbox', 'Production']
 
 
 class Register(Base):
+    @classmethod
+    def start(cls, bot, update, user_data):
+        markup = cls.create_markup(BTS_ENV, col=2)
+        cls.edit_message(bot, update, msg.REGISTER_START + msg.REGISTER_ENV, markup=markup)
+
+        return main.REGISTER_ENV
+
     @classmethod
     def environment(cls, bot, update, user_data):
         env = update.callback_query.data
@@ -47,10 +54,12 @@ class Register(Base):
         password_derivated = security.derivate_key(password_clear.encode())
         password_hash = security.hash_key(password_derivated).hexdigest()
 
+        del update.message.text
+        del password_clear
+
         encrypt = cls._create_key_encrypted(security.create_random_key(), password_derivated)
         api = cls._create_key_encrypted(user_data['key_api'].encode(), encrypt.key_encypted_bytes)
 
-        del password_clear
         del password_derivated
         del user_data['key_api']
 

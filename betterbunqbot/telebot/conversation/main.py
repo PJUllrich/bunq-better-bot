@@ -3,13 +3,17 @@ from telegram.ext import CallbackQueryHandler, ConversationHandler, Filters, Mes
 
 from telebot import msg
 from telebot.conversation.base import Base, STATE
-from telebot.conversation.register import BTS_ENV, Register
+from telebot.conversation.login import Login
+from telebot.conversation.register import Register
 
-HOME_DECISION, ACCOUNT_DECISION, FUNCTION_DECISION, REGISTER, REGISTER_KEY, REGISTER_PW = range(6)
+HOME_DECISION, ACCOUNT_DECISION, FUNCTION_DECISION, \
+REGISTER_ENV, REGISTER_KEY, REGISTER_PW, \
+LOGIN_PW, LOGIN_DEL = range(8)
 
 BTS_MAIN = ['Account', 'Functions']
 BTS_ACCOUNT = ['Info', 'Login', '<< Back', 'Register']
 BTS_FUNCTIONS = ['<< Back', 'Save the Cents', 'Budgets']
+BTS_DELETE_MSG = ["I'm done"]
 
 
 class Main(Base):
@@ -21,7 +25,7 @@ class Main(Base):
     def setup_flow(cls):
         cls.btn_cmd_map = {
             HOME_DECISION: (BTS_MAIN, [cls.account, cls.functions]),
-            ACCOUNT_DECISION: (BTS_ACCOUNT, [cls.info, cls.login, cls.home, cls.register]),
+            ACCOUNT_DECISION: (BTS_ACCOUNT, [cls.info, Login.start, cls.home, Register.start]),
             FUNCTION_DECISION: (BTS_FUNCTIONS, [cls.home, cls.save_cents, cls.budgets])
         }
 
@@ -36,9 +40,10 @@ class Main(Base):
                 HOME_DECISION: [decision_handler],
                 ACCOUNT_DECISION: [decision_handler],
                 FUNCTION_DECISION: [decision_handler],
-                REGISTER: [CallbackQueryHandler(Register.environment, pass_user_data=True)],
+                REGISTER_ENV: [CallbackQueryHandler(Register.environment, pass_user_data=True)],
                 REGISTER_KEY: [MessageHandler(Filters.text, Register.api_key, pass_user_data=True)],
-                REGISTER_PW: [MessageHandler(Filters.text, Register.password, pass_user_data=True)]
+                REGISTER_PW: [MessageHandler(Filters.text, Register.password, pass_user_data=True)],
+                LOGIN_PW: [MessageHandler(Filters.text, Login.password, pass_user_data=True)]
             },
 
             fallbacks=[]
@@ -80,13 +85,6 @@ class Main(Base):
 
     def login(self, bot, update, user_data):
         pass
-
-    @classmethod
-    def register(cls, bot, update, user_data):
-        markup = cls.create_markup(BTS_ENV, col=2)
-        cls.edit_message(bot, update, msg.REGISTER_START + msg.REGISTER_ENV, markup=markup)
-
-        return REGISTER
 
     @classmethod
     def save_cents(cls, bot, update, user_data):

@@ -32,10 +32,14 @@ def hash_key(key):
     return hashlib.blake2b(key, digest_size=_KEY_LENGTH)
 
 
-def check_password(pw, hashed):
+def hash_password(pw):
     pw_derivated = derivate_key(pw)
     pw_hashed = hash_key(pw_derivated).hexdigest()
-    return pw_hashed == hashed
+    return pw_hashed
+
+
+def check_password(pw, hashed):
+    return hash_password(pw) == hashed
 
 
 def encrypt(text_plain, key):
