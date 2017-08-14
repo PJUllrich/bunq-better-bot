@@ -1,6 +1,6 @@
 import logging
 
-from flask import session
+from flask import session, jsonify
 
 import util.decorators as deco
 from app import const
@@ -57,4 +57,4 @@ def login(chat_id, pw):
     session[const.AUTH_TOKEN] = token
     session[const.API_KEY] = api_key
 
-    return {'TOKEN': token}, 200
+    return jsonify({'TOKEN': token}), 200

@@ -1,10 +1,8 @@
 import json
-
 import random
 
 from model import User
 from tests.test_base import BaseTest
-from util import security
 
 
 class AccountTest(BaseTest):
@@ -44,10 +42,10 @@ class AccountTest(BaseTest):
 
         rand_auth['pw'] = rand_data['pw']
 
-        # # Success should be returned since both the chat_id and password match the records
-        # res = self.app.post('/user/login', data=json.dumps(rand_auth),
-        #                     content_type='application/json')
-        # assert res.status_code == 200
+        # Success should be returned since both the chat_id and password match the records
+        res = self.app.post('/user/login', data=json.dumps(rand_auth),
+                            content_type='application/json')
+        assert res.status_code == 200
 
     def _get_random_registration_data(self):
         rand_env = random.choice(['SANDBOX', 'PRODUCTION'])
