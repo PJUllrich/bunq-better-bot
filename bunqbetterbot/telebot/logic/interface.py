@@ -1,4 +1,10 @@
-class BudgetInterface:
+import os
+import requests
+
+BACKEND_URL = os.environ['BUNQ_BOT_BACKEND_URL']
+
+
+class BotInterface:
     @staticmethod
     def get_budget_updates():
         pass
@@ -7,18 +13,14 @@ class BudgetInterface:
     def create_budget(data):
         pass
 
-
-class AccountInterface:
     @staticmethod
     def register(data):
-        pass
+        return requests.post(BACKEND_URL + '/user/register', json=data)
 
     @staticmethod
     def login(data):
-        pass
+        return requests.post(BACKEND_URL + '/user/login', json=data)
 
-
-class BotInterface(BudgetInterface, AccountInterface):
     @staticmethod
     def get_active_accounts():
         pass

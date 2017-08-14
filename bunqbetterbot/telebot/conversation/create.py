@@ -15,10 +15,7 @@ _INPUT_MORE = 'More'
 
 
 class Create(conversation.Base):
-    def __init__(self, actions):
-        self.actions = actions
-        self.creation = {}
-
+    def __init__(self):
         self.handler = self._setup_handler()
 
     def _setup_handler(self):

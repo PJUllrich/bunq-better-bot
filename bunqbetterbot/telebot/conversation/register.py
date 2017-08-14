@@ -1,10 +1,9 @@
-import json
-
 import base64
 
 import conversation
-import msg
+import msg.register
 from conversation import main
+from logic.interface import BotInterface
 from util import security
 
 BTS_ENV = ['Sandbox', 'Production']
@@ -40,7 +39,7 @@ class Register(conversation.Base):
     def password(cls, bot, update, user_data):
         cls.set_authentication_params(update, user_data)
 
-        cls.actions.register(json.dumps(user_data))
+        res = BotInterface.register(user_data)
 
         markup = cls.create_markup(main.BTS_ACCOUNT, col=2)
         bot.send_message(update.message.chat_id, msg.register.END, reply_markup=markup)
@@ -50,23 +49,13 @@ class Register(conversation.Base):
     @classmethod
     def set_authentication_params(cls, update, user_data):
         password_clear = update.message.text
+        password_hashed = security.hash_key(password_clear)
+
+        del password_clear
         del update.message.text
 
-        password_derivated = security.derivate_key(password_clear.encode())
-        password_hash = security.hash_key(password_derivated).hexdigest()
-
-        encrypt_key, encrypt_iv = security.encrypt(security.create_random_key(), password_derivated)
-        api_key, api_iv = security.encrypt(user_data['key_api'].encode(), encrypt_key)
-
-        del password_derivated
-        del user_data['key_api']
-
         user_data['chat_id'] = update.message.chat_id
-        user_data['password_hash'] = password_hash
-        user_data['key_api'] = {'key': cls._bytes_to_str(api_key),
-                                'iv': cls._bytes_to_str(api_iv)}
-        user_data['key_encrypt'] = {'key': cls._bytes_to_str(encrypt_key),
-                                    'iv': cls._bytes_to_str(encrypt_iv)}
+        user_data['pw'] = password_hashed
 
     @classmethod
     def _bytes_to_str(cls, data):

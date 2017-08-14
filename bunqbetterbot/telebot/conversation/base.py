@@ -5,7 +5,6 @@ USER_STATE = 'USER_STATE'
 
 class Base:
     btn_cmd_map = {}
-    actions = None
 
     @classmethod
     def create_markup(cls, data, col=1, reverse=False):

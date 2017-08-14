@@ -14,7 +14,7 @@ class Client:
         ----------
         environment : context.ApiEnvironmentType
         api_key     : str
-            The api key you got from the bunq app.
+            The api key you got from the bunq flask-app.
         description : str
             Description of the device you are connecting the the bunq api.
 

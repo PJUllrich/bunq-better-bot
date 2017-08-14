@@ -6,9 +6,9 @@ from model import Base, BaseModel
 class Key(Base, BaseModel):
     user_id = Column(Integer, ForeignKey('users.id'))
 
-    key = Column(String, nullable=False)
-    iv = Column(String, nullable=False)
+    value = Column(String, nullable=False)
+    salt = Column(String, nullable=False)
 
     def __init__(self, key, iv=None):
-        self.key = key
-        self.iv = iv
+        self.value = key
+        self.salt = iv

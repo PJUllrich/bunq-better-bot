@@ -6,6 +6,7 @@ import msg
 from conversation.base import USER_STATE
 from conversation.login import Login
 from conversation.register import Register
+import msg.main
 
 HOME_DECISION, ACCOUNT_DECISION, FUNCTION_DECISION, \
 REGISTER_ENV, REGISTER_KEY, REGISTER_PW, \
@@ -18,8 +19,7 @@ BTS_DELETE_MSG = ["I don't know how", "Done"]
 
 
 class Main(conversation.Base):
-    def __init__(self, actions):
-        conversation.Base.actions = actions
+    def __init__(self):
         self.setup_flow()
 
     @classmethod

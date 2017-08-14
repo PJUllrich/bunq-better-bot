@@ -1,9 +1,11 @@
 from telegram import ParseMode
 
 import conversation
-import msg
+import msg.general
+import msg.login
 from conversation import main
 from conversation.base import USER_STATE
+from logic.interface import BotInterface
 from util import security
 
 
@@ -27,7 +29,7 @@ class Login(conversation.Base):
             'pw': pw_hashed
         }
 
-        authenticated = cls.actions.login(data)
+        authenticated = BotInterface.login(data)
 
         if not authenticated:
             return cls._handle_login_fail(bot, update, user_data)

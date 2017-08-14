@@ -23,4 +23,4 @@ class BaseModel:
 
     @classmethod
     def qry_by(cls, condition, val):
-        return cls.query.filter_by(**{condition: val}).all()
+        return cls.query.filter_by(**{condition: val})

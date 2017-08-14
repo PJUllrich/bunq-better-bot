@@ -1,4 +1,4 @@
-from backend.model import Budget
+from model import Budget
 
 
 class BudgetResult:

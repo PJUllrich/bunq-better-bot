@@ -6,7 +6,7 @@ from util import security
 
 class SecurityTest(BaseTest):
     def test_derivate_key(self):
-        rand_pw = self.faker.password()
+        rand_pw = security.gen_token()
 
         res1 = security.derivate_key(rand_pw)
         res2 = security.derivate_key(rand_pw)
@@ -15,11 +15,9 @@ class SecurityTest(BaseTest):
 
     def test_encryption_and_decryption(self):
         rand_text = self.faker.text()
-        rand_key = os.urandom(32)
+        rand_key = security.gen_token()
 
         text_encrypted, iv = security.encrypt(rand_text, rand_key)
-        text_decrypted_bytes = security.decrypt(text_encrypted, rand_key, iv)
-
-        text_decrypted = text_decrypted_bytes.decode()
+        text_decrypted = security.decrypt(text_encrypted, rand_key, iv)
 
         assert text_decrypted == rand_text, 'Decrypted text must match plain text.'

@@ -1,33 +1,43 @@
 import inspect
 import json
 
+from flask import jsonify, session
+from functools import wraps
 
-def decode_json(func):
-    def inner(data_json):
-        data_dict = json.loads(data_json)
-        return func(data_dict)
-
-    return inner
+from app import const
 
 
-def decode_dict(func):
+def jsonify_return(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        res = func(*args, **kwargs)
+        return tuple(jsonify(res[0]) + list(res[1:]))
+
+    return wrapper
+
+
+def decode_from_json(func):
     params = inspect.signature(func).parameters.keys()
 
-    def inner(data):
-        args = [data.get(p) for p in params]
+    @wraps(func)
+    def wrapper(data_json):
+        data_dict = json.loads(data_json)
+        args = [data_dict.get(p) for p in params]
 
         if None in args:
             raise ValueError('Not all necessary data was passed.')
 
         return func(*args)
 
-    return inner
+    return wrapper
 
 
-def ensure_byte_input(func):
-    def inner(*args):
-        data = [e.encode() if not isinstance(e, bytes) else e for e in args]
+def require_token(func):
+    @wraps(func)
+    def wrapper(*args, **kwargs):
+        if const.AUTH_TOKEN not in session:
+            return "Login required", 401
 
-        return func(*data)
+        return func(*args, **kwargs)
 
-    return inner
+    return wrapper
