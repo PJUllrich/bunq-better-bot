@@ -4,8 +4,8 @@ from telegram import ChatAction, KeyboardButton, ReplyKeyboardMarkup
 from telegram.ext import CommandHandler, \
     ConversationHandler, Filters, MessageHandler
 
-from telebot import msg
-from telebot.conversation.base import Base
+import conversation.base
+import msg
 
 logger = logging.getLogger(__name__)
 
@@ -14,7 +14,7 @@ _INPUT_DONE = 'Done'
 _INPUT_MORE = 'More'
 
 
-class Create(Base):
+class Create(conversation.Base):
     def __init__(self, actions):
         self.actions = actions
         self.creation = {}
@@ -40,8 +40,8 @@ class Create(Base):
     def start(self, bot, update):
         logger.info('Create: A new budget creation was started.')
 
-        bot.send_message(update.message.chat_id, msg.CREATE_START)
-        bot.send_message(update.message.chat_id, msg.CREATE_NAME)
+        bot.send_message(update.message.chat_id, msg.create.START)
+        bot.send_message(update.message.chat_id, msg.create.NAME)
 
         return NAME
 
@@ -55,7 +55,7 @@ class Create(Base):
         accounts = self.actions.get_active_accounts()
         markup = self._get_keyboard_iban(accounts)
 
-        bot.send_message(update.message.chat_id, msg.CREATE_IBAN,
+        bot.send_message(update.message.chat_id, msg.create.IBAN,
                          reply_markup=markup)
 
         self.creation['iban'] = []
@@ -69,7 +69,7 @@ class Create(Base):
         if data == _INPUT_DONE:
             self.creation['iban'] = list(set(self.creation['iban']))
             markup = self._get_keyboard_duration()
-            bot.send_message(update.message.chat_id, msg.CREATE_DURATION,
+            bot.send_message(update.message.chat_id, msg.create.DURATION,
                              reply_markup=markup)
             return DURATION
 
@@ -84,14 +84,14 @@ class Create(Base):
         data = update.message.text
 
         if data == _INPUT_MORE:
-            bot.send_message(update.message.chat_id, msg.CREATE_DURATION_MORE)
+            bot.send_message(update.message.chat_id, msg.create.DURATION_MORE)
             return DURATION
 
         try:
             duration = int(data)
         except ValueError:
             bot.send_message(update.message.chat_id,
-                             msg.INVALID_INPUT_NUMBER)
+                             msg.general.INVALID_INPUT_NUMBER)
             return DURATION
 
         self.creation['duration'] = duration
@@ -100,7 +100,7 @@ class Create(Base):
             self._create_budget()
         except ValueError:
             bot.send_message(update.message.chat_id,
-                             msg.INVALID_INPUT)
+                             msg.general.INVALID_INPUT)
             return ConversationHandler.END
 
         return self.finish(bot, update)
@@ -110,29 +110,18 @@ class Create(Base):
 
     def finish(self, bot, update):
 
-        bot.send_message(update.message.chat_id, msg.CREATE_FINISH)
+        bot.send_message(update.message.chat_id, msg.create.FINISH)
 
         return ConversationHandler.END
 
     def cancel(self, bot, update):
-        bot.send_message(update.message.chat_id, msg.CANCEL)
+        bot.send_message(update.message.chat_id, msg.general.CANCEL)
 
         self.creation = {}
 
         return ConversationHandler.END
 
     def _get_keyboard_iban(self, accounts):
-        """
-
-        Parameters
-        ----------
-        accounts    : list[MonetaryAccountBank]
-
-        Returns
-        -------
-
-        """
-
         keyboard = []
         for acc in accounts:
             iban = self.actions.get_iban(acc)

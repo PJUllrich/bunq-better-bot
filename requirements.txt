@@ -1,4 +1,4 @@
-sqlalchemy
 bcrypt
+sqlalchemy
 bunq-sdk==0.9.1
 python-telegram-bot==7.0.1

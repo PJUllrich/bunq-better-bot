@@ -2,19 +2,19 @@ import json
 
 import base64
 
-import util.security as security
-from telebot import msg
-from telebot.conversation import main
-from telebot.conversation.base import Base
+import conversation
+import msg
+from conversation import main
+from util import security
 
 BTS_ENV = ['Sandbox', 'Production']
 
 
-class Register(Base):
+class Register(conversation.Base):
     @classmethod
     def start(cls, bot, update, user_data):
         markup = cls.create_markup(BTS_ENV, col=2)
-        cls.edit_message(bot, update, msg.REGISTER_START + msg.REGISTER_ENV, markup=markup)
+        cls.edit_message(bot, update, msg.register.START + msg.register.ENV, markup=markup)
 
         return main.REGISTER_ENV
 
@@ -23,7 +23,7 @@ class Register(Base):
         env = update.callback_query.data
         user_data['env'] = env.upper()
 
-        cls.edit_message(bot, update, msg.REGISTER_KEY, markup=[])
+        cls.edit_message(bot, update, msg.register.KEY, markup=[])
 
         return main.REGISTER_KEY
 
@@ -32,7 +32,7 @@ class Register(Base):
         key = update.message.text
         user_data['key_api'] = key
 
-        bot.send_message(update.message.chat_id, msg.REGISTER_PASS)
+        bot.send_message(update.message.chat_id, msg.register.PASS)
 
         return main.REGISTER_PW
 
@@ -43,7 +43,7 @@ class Register(Base):
         cls.actions.register(json.dumps(user_data))
 
         markup = cls.create_markup(main.BTS_ACCOUNT, col=2)
-        bot.send_message(update.message.chat_id, msg.REGISTER_END, reply_markup=markup)
+        bot.send_message(update.message.chat_id, msg.register.END, reply_markup=markup)
 
         return main.ACCOUNT_DECISION
 

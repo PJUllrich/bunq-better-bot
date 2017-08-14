@@ -1,10 +1,11 @@
 from telegram.ext import CallbackQueryHandler, ConversationHandler, Filters, MessageHandler, \
     RegexHandler
 
-from telebot import msg
-from telebot.conversation.base import Base, STATE
-from telebot.conversation.login import Login
-from telebot.conversation.register import Register
+import conversation
+import msg
+from conversation.base import USER_STATE
+from conversation.login import Login
+from conversation.register import Register
 
 HOME_DECISION, ACCOUNT_DECISION, FUNCTION_DECISION, \
 REGISTER_ENV, REGISTER_KEY, REGISTER_PW, \
@@ -16,9 +17,9 @@ BTS_FUNCTIONS = ['<< Back', 'Save the Cents', 'Budgets']
 BTS_DELETE_MSG = ["I don't know how", "Done"]
 
 
-class Main(Base):
+class Main(conversation.Base):
     def __init__(self, actions):
-        Base.actions = actions
+        conversation.Base.actions = actions
         self.setup_flow()
 
     @classmethod
@@ -56,29 +57,29 @@ class Main(Base):
         markup = cls.create_markup(BTS_MAIN)
 
         if update.callback_query is None:
-            bot.send_message(update.message.chat_id, msg.HOME, reply_markup=markup)
+            bot.send_message(update.message.chat_id, msg.main.HOME, reply_markup=markup)
         else:
-            cls.edit_message(bot, update, msg.HOME, markup)
+            cls.edit_message(bot, update, msg.main.HOME, markup)
 
-        user_data[STATE] = HOME_DECISION
+        user_data[USER_STATE] = HOME_DECISION
         return HOME_DECISION
 
     @classmethod
     def account(cls, bot, update, user_data):
         markup = cls.create_markup(BTS_ACCOUNT, col=2)
 
-        cls.edit_message(bot, update, msg.ACCOUNT, markup)
+        cls.edit_message(bot, update, msg.main.ACCOUNT, markup)
 
-        user_data[STATE] = ACCOUNT_DECISION
+        user_data[USER_STATE] = ACCOUNT_DECISION
         return ACCOUNT_DECISION
 
     @classmethod
     def functions(cls, bot, update, user_data):
         markup = cls.create_markup(BTS_FUNCTIONS, col=2, reverse=True)
 
-        cls.edit_message(bot, update, msg.FUNCTIONS, markup)
+        cls.edit_message(bot, update, msg.main.FUNCTIONS, markup)
 
-        user_data[STATE] = FUNCTION_DECISION
+        user_data[USER_STATE] = FUNCTION_DECISION
         return FUNCTION_DECISION
 
     @classmethod
