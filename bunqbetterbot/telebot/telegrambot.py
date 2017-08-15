@@ -1,6 +1,6 @@
 import logging
-
 import os
+
 from telegram.ext import Updater
 
 from conversation.main import Main
@@ -41,4 +41,4 @@ class TelegramBot:
         logger.info(f'Telegram bot is now listening on port {_WEBHOOK_PORT}.')
 
     def error(self, bot, update, error):
-        logger.warning(f'Error: {error} caused by Update: {update}')
+        logger.error(f'Error: {error} caused by Update: {update}')

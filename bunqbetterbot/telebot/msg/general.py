@@ -1,10 +1,10 @@
 WELCOME = "Hello there! You can use my funky functionality to be even more happy with bunq!"
 
-CANCEL = "You canceled the process. Will delete all information."
+CANCEL = "You canceled the process (or something went wrong). Will delete all information."
 INVALID_INPUT = "Some of the information you gave were incorrect. Try again :-("
 INVALID_INPUT_NUMBER = "Invalid input. Please enter a number."
 NO_PERMISSION = "You don't have permission to contact this bot!"
-ERROR = "Sorry, but an error occurred on my side."
+ERROR = "An error occurred. Please try again, or contact us via GitHub."
 
 DELETE_MSG = "For security, please delete the previous message containing the {}.\n" \
              "\n" \

@@ -1,4 +1,4 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup
+from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 
 USER_STATE = 'USER_STATE'
 
@@ -25,14 +25,18 @@ class Base:
     def decision(cls, bot, update, user_data):
         choice = update.callback_query.data
         buttons, commands = cls.btn_cmd_map[user_data[USER_STATE]]
-        cmd = commands[buttons.index(choice)]
-
-        return cmd(bot, update, user_data)
+        try:
+            cmd_idx = buttons.index(choice)
+            cmd = commands[cmd_idx]
+            return cmd(bot, update, user_data)
+        except ValueError:
+            return False
 
     @staticmethod
-    def edit_message(bot, update, text, markup):
+    def edit_message(bot, update, text, markup, parse_mode=ParseMode.MARKDOWN):
         chat_id = update.effective_message.chat_id
         msg_id = update.effective_message.message_id
 
         bot.edit_message_text(text=text, reply_markup=markup,
-                              chat_id=chat_id, message_id=msg_id)
+                              chat_id=chat_id, message_id=msg_id,
+                              parse_mode=parse_mode)

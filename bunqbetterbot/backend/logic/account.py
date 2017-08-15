@@ -57,4 +57,4 @@ def login(chat_id, pw):
     session[const.AUTH_TOKEN] = token
     session[const.API_KEY] = api_key
 
-    return jsonify({'TOKEN': token}), 200
+    return jsonify({const.AUTH_TOKEN: token}), 200

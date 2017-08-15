@@ -1,10 +1,17 @@
 import base64
+import logging
+
+from telegram import ParseMode
 
 import conversation
+import msg.general
 import msg.register
 from conversation import main
+from conversation.base import USER_STATE
 from logic.interface import BotInterface
 from util import security
+
+logger = logging.getLogger(__name__)
 
 BTS_ENV = ['Sandbox', 'Production']
 
@@ -31,7 +38,7 @@ class Register(conversation.Base):
         key = update.message.text
         user_data['key_api'] = key
 
-        bot.send_message(update.message.chat_id, msg.register.PASS)
+        bot.send_message(update.message.chat_id, msg.register.PASS, parse_mode=ParseMode.MARKDOWN)
 
         return main.REGISTER_PW
 
@@ -41,9 +48,18 @@ class Register(conversation.Base):
 
         res = BotInterface.register(user_data)
 
-        markup = cls.create_markup(main.BTS_ACCOUNT, col=2)
-        bot.send_message(update.message.chat_id, msg.register.END, reply_markup=markup)
+        user_data.clear()
 
+        if res.status_code != 201:
+            ans = msg.general.ERROR
+            logger.error(f'Error occurred during registration: {res.content.decode()}')
+        else:
+            ans = msg.register.END
+
+        markup = cls.create_markup(main.BTS_ACCOUNT, col=2)
+        bot.send_message(update.message.chat_id, ans, reply_markup=markup)
+
+        user_data[USER_STATE] = main.ACCOUNT_DECISION
         return main.ACCOUNT_DECISION
 
     @classmethod

@@ -1,12 +1,14 @@
-from telegram.ext import CallbackQueryHandler, ConversationHandler, Filters, MessageHandler, \
-    RegexHandler
+from telegram.ext import CallbackQueryHandler, CommandHandler, ConversationHandler, Filters, \
+    MessageHandler, RegexHandler
 
 import conversation
 import msg
+import msg.general
+import msg.main
 from conversation.base import USER_STATE
 from conversation.login import Login
 from conversation.register import Register
-import msg.main
+from conversation.savethecents import SaveTheCents
 
 HOME_DECISION, ACCOUNT_DECISION, FUNCTION_DECISION, \
 REGISTER_ENV, REGISTER_KEY, REGISTER_PW, \
@@ -27,12 +29,13 @@ class Main(conversation.Base):
         cls.btn_cmd_map = {
             HOME_DECISION: (BTS_MAIN, [cls.account, cls.functions]),
             ACCOUNT_DECISION: (BTS_ACCOUNT, [cls.info, Login.start, cls.home, Register.start]),
-            FUNCTION_DECISION: (BTS_FUNCTIONS, [cls.home, cls.save_cents, cls.budgets])
+            FUNCTION_DECISION: (BTS_FUNCTIONS, [cls.home, SaveTheCents.start, cls.budgets])
         }
 
     @property
     def handler(self):
         decision_handler = CallbackQueryHandler(self.decision, pass_user_data=True)
+        cancel_handler = CommandHandler('cancel', self.cancel, pass_user_data=True)
 
         return ConversationHandler(
             entry_points=[RegexHandler('\S*', self.home, pass_user_data=True)],
@@ -41,15 +44,17 @@ class Main(conversation.Base):
                 HOME_DECISION: [decision_handler],
                 ACCOUNT_DECISION: [decision_handler],
                 FUNCTION_DECISION: [decision_handler],
+
                 REGISTER_ENV: [CallbackQueryHandler(Register.environment, pass_user_data=True)],
                 REGISTER_KEY: [MessageHandler(Filters.text, Register.api_key, pass_user_data=True)],
                 REGISTER_PW: [MessageHandler(Filters.text, Register.password, pass_user_data=True)],
+
                 LOGIN_PW: [MessageHandler(Filters.text, Login.password, pass_user_data=True,
                                           edited_updates=True)],
                 LOGIN_DEL: [CallbackQueryHandler(Login.delete, pass_user_data=True)]
             },
 
-            fallbacks=[]
+            fallbacks=[cancel_handler]
         )
 
     @classmethod
@@ -83,11 +88,18 @@ class Main(conversation.Base):
         return FUNCTION_DECISION
 
     @classmethod
-    def info(cls, bot, update, user_data):
-        pass
+    def cancel(cls, bot, update, user_data):
+        user_data.clear()
+
+        markup = cls.create_markup(BTS_MAIN)
+
+        bot.send_message(update.message.chat_id, msg.general.CANCEL, reply_markup=markup)
+
+        user_data[USER_STATE] = HOME_DECISION
+        return HOME_DECISION
 
     @classmethod
-    def save_cents(cls, bot, update, user_data):
+    def info(cls, bot, update, user_data):
         pass
 
     @classmethod
