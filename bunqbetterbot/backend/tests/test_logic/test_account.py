@@ -1,11 +1,18 @@
 import json
 import random
+from unittest.mock import patch
 
 from model import User
 from tests.test_base import BaseTest
 
 
 class AccountTest(BaseTest):
+    def setUp(self):
+        super().setUp()
+        patcher = patch('logic.account.AccountLogic._get_api_conf', return_value=self.faker.text())
+        self.addCleanup(patcher.stop)
+        self.mock_get_api_conf = patcher.start()
+
     def test_register(self):
         rand_data = self._get_random_registration_data()
         rand_chat_id = int(rand_data['chat_id'])
@@ -57,5 +64,5 @@ class AccountTest(BaseTest):
             'env': rand_env,
             'chat_id': rand_chat_id,
             'pw': rand_pw,
-            'key_api': rand_key_api
+            'api_key': rand_key_api
         }

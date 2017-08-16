@@ -3,7 +3,7 @@ from sqlalchemy import Column, ForeignKey, Integer, LargeBinary
 from model import Base, BaseModel
 
 
-class Key(Base, BaseModel):
+class EncryptedData(Base, BaseModel):
     user_id = Column(Integer, ForeignKey('users.id'))
 
     value = Column(LargeBinary, nullable=False)

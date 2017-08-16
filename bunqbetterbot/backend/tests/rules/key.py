@@ -1,4 +1,4 @@
-from model import Key
+from model import EncryptedData
 from tests.rules.base import BaseRule
 
 
@@ -9,4 +9,4 @@ class KeyRule(BaseRule):
         rand_iv = cls.faker.sha256().encode()
         rand_iv = rand_iv[:(len(rand_iv) // 2)]
 
-        return Key(rand_key, rand_iv)
+        return EncryptedData(rand_key, rand_iv)

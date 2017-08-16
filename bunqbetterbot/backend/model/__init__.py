@@ -13,7 +13,7 @@ Base.query = session.query_property()
 from .base_model import BaseModel
 from .account_alias import AccountAlias
 from .budget_result import BudgetResult
-from .key import Key
+from .encrypteddata import EncryptedData
 from .callback import Callback
 from .user import User
 from .account_reference import AccountReference
