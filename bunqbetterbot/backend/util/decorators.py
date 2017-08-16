@@ -17,17 +17,24 @@ def jsonify_return(func):
 
 
 def decode_from_json(func):
-    params = inspect.signature(func).parameters.keys()
+    params = list(inspect.signature(func).parameters.keys())
+
+    def get_func_args(data_json, keys):
+        data_dict = json.loads(data_json)
+        return [data_dict.get(p) for p in keys]
 
     @wraps(func)
-    def wrapper(data_json):
-        data_dict = json.loads(data_json)
-        args = [data_dict.get(p) for p in params]
+    def wrapper(*args):
+        if inspect.isclass(args[0]) or params[0] == 'self':
+            func_args = get_func_args(args[1], params[1:])
+            func_args = [args[0]] + func_args
+        else:
+            func_args = get_func_args(args[0], params)
 
-        if None in args:
+        if None in func_args:
             raise ValueError('Not all necessary data was passed.')
 
-        return func(*args)
+        return func(*func_args)
 
     return wrapper
 

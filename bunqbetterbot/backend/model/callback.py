@@ -14,14 +14,17 @@ class Callback(Base, BaseModel):
 
     def __init__(self, target, category):
         """
+
         Parameters
         ----------
         target      : str
             The target url for the POST callback notification.
+
         category    : str
             The category of the callback in all caps. Categories can be found
             here: https://doc.bunq.com/api/1/page/callbacks
         """
+
         self.method = _METHOD_URL
         self.target = target
         self.category = category

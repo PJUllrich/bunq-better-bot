@@ -9,6 +9,17 @@ class EncryptedData(Base, BaseModel):
     value = Column(LargeBinary, nullable=False)
     salt = Column(LargeBinary, nullable=False)
 
-    def __init__(self, key, iv=None):
-        self.value = key
-        self.salt = iv
+    def __init__(self, value, salt):
+        """
+
+        Parameters
+        ----------
+        value:  bytes
+            The encrypted data in bytes format
+
+        salt:   bytes
+            The salt which is needed to decrypt the data
+        """
+
+        self.value = value
+        self.salt = salt

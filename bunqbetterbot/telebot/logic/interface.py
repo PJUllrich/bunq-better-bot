@@ -22,8 +22,8 @@ class BotInterface:
         return requests.post(BACKEND_URL + '/user/login', json=data)
 
     @staticmethod
-    def get_active_accounts():
-        pass
+    def get_active_accounts(data):
+        return requests.get(BACKEND_URL + '/user/account/active', json=data)
 
     @staticmethod
     def get_iban(account):

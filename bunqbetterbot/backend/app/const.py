@@ -1,4 +1,4 @@
-CHAT_ID = 'CHAT_ID'
-AUTH_TOKEN = 'AUTHENTICATION_TOKEN'
-API_CONF = 'API_CONF'
+CHAT_ID = 'chat_id'
+AUTH_TOKEN = 'auth_token'
+API_CONF = 'api_conf'
 DEVICE_DESCRIPTION = 'bunqBetterBot'

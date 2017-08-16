@@ -5,6 +5,7 @@ INVALID_INPUT = "Some of the information you gave were incorrect. Try again :-("
 INVALID_INPUT_NUMBER = "Invalid input. Please enter a number."
 NO_PERMISSION = "You don't have permission to contact this bot!"
 ERROR = "An error occurred. Please try again, or contact us via GitHub."
+NOT_LOGGED_IN = "You have to log in first to use this functionality!"
 
 DELETE_MSG = "For security, please delete the previous message containing the {}.\n" \
              "\n" \

@@ -21,6 +21,12 @@ def login():
     return AccountLogic.login(request.data)
 
 
+@backend.route('/user/account/active', methods=['GET'])
+@deco.require_token
+def list_accounts():
+    return AccountLogic.list_active_accounts(request.data)
+
+
 @backend.route('/budget', methods=['GET'])
 @deco.require_token
 def get_budgets():

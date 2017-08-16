@@ -3,6 +3,7 @@ import logging
 from flask import jsonify, session
 
 import util.decorators as deco
+import bunq.sdk.model.generated.endpoint as bunq
 from app import const, errors
 from bunq.sdk.context import ApiContext, ApiEnvironmentType
 from model import EncryptedData, User
@@ -12,22 +13,20 @@ logger = logging.getLogger(__name__)
 
 
 class AccountLogic:
-    @staticmethod
+    @classmethod
     @deco.decode_from_json
-    def register(env, chat_id, pw, api_key):
+    def register(cls, env, chat_id, pw, api_key):
         logger.info('Received new register request')
 
         user_exists = AccountLogic._check_user_exists(chat_id)
         if user_exists:
             return errors.USER_EXISTS, 403
 
-        api_env = AccountLogic._get_api_env(env.upper())
-        api_conf = AccountLogic._get_api_conf(api_env, api_key)
+        api_env = cls._get_api_env(env.upper())
+        api_conf = cls._get_api_conf(api_env, api_key)
 
         pws, salt_pw = security.derivate_key(pw, num_keys=2)
-
-        pw_auth = pws[0]
-        pw_encrypt = pws[1]
+        pw_auth, pw_encrypt = cls._get_passwords(pws)
 
         api_conf_encrypted, salt_api = security.encrypt(api_conf, pw_encrypt)
 
@@ -63,11 +62,30 @@ class AccountLogic:
 
         return jsonify({const.AUTH_TOKEN: token}), 200
 
-    @staticmethod
-    def _check_user_exists(chat_id):
-        user = User.qry_by('chat_id', chat_id).first()
+    @classmethod
+    @deco.decode_from_json
+    def list_active_accounts(cls, auth_token):
+        api_conf = session[const.API_CONF]
+        api_context = ApiContext.from_json(api_conf)
 
-        return user is not None
+        user_info = bunq.User.list(api_context)
+        print(user_info)
+
+
+
+    @classmethod
+    def _check_user_exists(cls, chat_id):
+        return cls._get_user(chat_id) is not None
+
+    @staticmethod
+    def _get_passwords(pws):
+        pw_auth = pws[0]
+        pw_encrypt = pws[1]
+        return pw_auth, pw_encrypt
+
+    @staticmethod
+    def _get_user(chat_id):
+        return User.qry_by('chat_id', chat_id).first()
 
     @staticmethod
     def _get_api_env(env):

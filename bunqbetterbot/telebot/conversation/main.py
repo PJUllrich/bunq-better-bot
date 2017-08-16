@@ -5,14 +5,15 @@ import conversation
 import msg
 import msg.general
 import msg.main
-from conversation.base import USER_STATE
 from conversation.login import Login
 from conversation.register import Register
 from conversation.savethecents import SaveTheCents
+from util import const
 
-HOME_DECISION, ACCOUNT_DECISION, FUNCTION_DECISION, \
-REGISTER_ENV, REGISTER_KEY, REGISTER_PW, \
-LOGIN_PW, LOGIN_DEL = range(8)
+(HOME_DECISION, ACCOUNT_DECISION, FUNCTION_DECISION,
+ REGISTER_ENV, REGISTER_KEY, REGISTER_PW,
+ LOGIN_PW, LOGIN_DEL,
+ SAVE_SAVING, SAVE_ACCOUNTS) = range(9)
 
 BTS_MAIN = ['Account', 'Functions']
 BTS_ACCOUNT = ['Info', 'Login', '<< Back', 'Register']
@@ -62,11 +63,12 @@ class Main(conversation.Base):
         markup = cls.create_markup(BTS_MAIN)
 
         if update.callback_query is None:
+            user_data[const.CHAT_ID] = update.message.chat_id
             bot.send_message(update.message.chat_id, msg.main.HOME, reply_markup=markup)
         else:
             cls.edit_message(bot, update, msg.main.HOME, markup)
 
-        user_data[USER_STATE] = HOME_DECISION
+        user_data[const.USER_STATE] = HOME_DECISION
         return HOME_DECISION
 
     @classmethod
@@ -75,7 +77,7 @@ class Main(conversation.Base):
 
         cls.edit_message(bot, update, msg.main.ACCOUNT, markup)
 
-        user_data[USER_STATE] = ACCOUNT_DECISION
+        user_data[const.USER_STATE] = ACCOUNT_DECISION
         return ACCOUNT_DECISION
 
     @classmethod
@@ -84,19 +86,23 @@ class Main(conversation.Base):
 
         cls.edit_message(bot, update, msg.main.FUNCTIONS, markup)
 
-        user_data[USER_STATE] = FUNCTION_DECISION
+        user_data[const.USER_STATE] = FUNCTION_DECISION
         return FUNCTION_DECISION
 
     @classmethod
     def cancel(cls, bot, update, user_data):
-        user_data.clear()
+        cls.reset_user_data(update, user_data)
 
         markup = cls.create_markup(BTS_MAIN)
-
         bot.send_message(update.message.chat_id, msg.general.CANCEL, reply_markup=markup)
 
-        user_data[USER_STATE] = HOME_DECISION
+        user_data[const.USER_STATE] = HOME_DECISION
         return HOME_DECISION
+
+    @staticmethod
+    def reset_user_data(update, user_data):
+        user_data.clear()
+        user_data[const.CHAT_ID] = update.message.chat_id
 
     @classmethod
     def info(cls, bot, update, user_data):

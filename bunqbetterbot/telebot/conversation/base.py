@@ -1,6 +1,6 @@
-from telegram import InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
+from telegram import ChatAction, InlineKeyboardButton, InlineKeyboardMarkup, ParseMode
 
-USER_STATE = 'USER_STATE'
+from util.const import USER_STATE
 
 
 class Base:
@@ -40,3 +40,7 @@ class Base:
         bot.edit_message_text(text=text, reply_markup=markup,
                               chat_id=chat_id, message_id=msg_id,
                               parse_mode=parse_mode)
+
+    @staticmethod
+    def send_typing(bot, update):
+        bot.send_chat_action(chat_id=update.message.chat_id, action=ChatAction.TYPING)

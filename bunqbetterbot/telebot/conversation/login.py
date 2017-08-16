@@ -6,7 +6,7 @@ import conversation
 import msg.general
 import msg.login
 from conversation import main
-from conversation.base import USER_STATE
+from util.const import USER_STATE
 from logic.interface import BotInterface
 from util import const, security
 

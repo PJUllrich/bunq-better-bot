@@ -7,7 +7,7 @@ import conversation
 import msg.general
 import msg.register
 from conversation import main
-from conversation.base import USER_STATE
+from util.const import USER_STATE
 from logic.interface import BotInterface
 from util import security
 
@@ -36,7 +36,7 @@ class Register(conversation.Base):
     @classmethod
     def api_key(cls, bot, update, user_data):
         key = update.message.text
-        user_data['key_api'] = key
+        user_data['api_key'] = key
 
         bot.send_message(update.message.chat_id, msg.register.PASS, parse_mode=ParseMode.MARKDOWN)
 

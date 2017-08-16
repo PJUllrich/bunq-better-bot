@@ -10,4 +10,11 @@ class BudgetResult(Base, BaseModel):
     amount = Column(Float, nullable=False)
 
     def __init__(self, amount):
+        """
+
+        Parameters
+        ----------
+        amount: float
+        """
+
         self.amount = amount

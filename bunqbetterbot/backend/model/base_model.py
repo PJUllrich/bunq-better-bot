@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer
+from sqlalchemy import Column, Integer, TIMESTAMP, func
 from sqlalchemy.ext.declarative import declared_attr
 
 from model import session
@@ -10,6 +10,7 @@ class BaseModel:
         return cls.__name__.lower() + 's'
 
     id = Column(Integer, primary_key=True)
+    updated = Column(TIMESTAMP, server_default=func.now(), onupdate=func.current_timestamp())
 
     @staticmethod
     def add(obj):
